@@ -3,7 +3,7 @@ VENV := venv
 APP_DIR := app
 
 # default target, when make executed without arguments
-all: venv
+all: test
 
 #
 $(VENV)/bin/activate:
@@ -12,8 +12,10 @@ $(VENV)/bin/activate:
 
 venv: $(VENV)/bin/activate
 
+# Use `yq` to parse config/testing.toml and set the env variables. Then run pytest.
 test: venv
-	./$(VENV)/bin/python3 -m pytest
+	touch .gitignore  # used to force make to run test every time 
+	$(shell yq -o='shell' '.env_variables' config/testing.toml | tr '\n' ' ' | sed 's|$$|./$(VENV)/bin/python3 -m pytest|')
 
 run: venv
 	./$(VENV)/bin/python3 $(APP_DIR)/main.py
@@ -22,5 +24,5 @@ clean:
 	rm -rf $(VENV)
 	find . -type f -name '*.pyc' -delete
 
-.PHONY: all venv run clean
+.PHONY: all test venv run clean
 
