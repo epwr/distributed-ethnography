@@ -19,7 +19,7 @@ test: venv
 
 run: venv
 	touch .gitignore  # used to force make to run command every time 
-	$(shell yq -o='shell' '.env_variables' config/local.toml | tr '\n' ' ' | sed 's|$$|./$(VENV)/bin/python3 app/server.py|')
+	$(shell yq -o='shell' '.env_variables' config/local.toml | tr '\n' ' ' | sed 's|$$|./$(VENV)/bin/python3 serve.py|')
 
 clean:
 	rm -rf $(VENV)
