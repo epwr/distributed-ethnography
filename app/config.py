@@ -16,8 +16,6 @@ class BaseSettings():
 
 
 class AppSettings(BaseSettings):
-    host: str
-    port: int
-
+    test_value: int
 
 settings = AppSettings()

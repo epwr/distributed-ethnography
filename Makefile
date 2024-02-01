@@ -18,7 +18,8 @@ test: venv
 	$(shell yq -o='shell' '.env_variables' config/testing.toml | tr '\n' ' ' | sed 's|$$|./$(VENV)/bin/python3 -m pytest|')
 
 run: venv
-	./$(VENV)/bin/python3 $(APP_DIR)/main.py
+	touch .gitignore  # used to force make to run command every time 
+	$(shell yq -o='shell' '.env_variables' config/local.toml | tr '\n' ' ' | sed 's|$$|./$(VENV)/bin/python3 app/server.py|')
 
 clean:
 	rm -rf $(VENV)
