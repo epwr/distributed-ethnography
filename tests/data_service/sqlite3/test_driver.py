@@ -1,7 +1,4 @@
-from unittest import mock
-
-from app.config import settings
-from app.data_service.sqlite3_driver import Sqlite3Driver
+from app.data_service.models import Survey
 
 
 def test_sqlite3_driver_enforces_foreign_key_constraints():
@@ -16,7 +13,6 @@ def test_sqlite3_driver_can_get_list_open_surveys(test_database_driver):
 
     surveys = test_database_driver.get_open_surveys()
 
-    assert isinstance(surveys, list)
     assert len(surveys) == 1
-
-
+    for survey in surveys:
+        assert isinstance(survey, Survey)

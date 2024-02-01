@@ -2,7 +2,7 @@ import pytest
 from pathlib import Path
 
 from app.config import settings
-from app.data_service.sqlite3_driver import Sqlite3Driver
+from app.data_service.sqlite3 import Sqlite3Driver
 
 
 @pytest.fixture

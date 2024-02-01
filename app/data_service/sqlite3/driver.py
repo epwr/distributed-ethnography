@@ -20,8 +20,6 @@ class Sqlite3Driver:
         cursor = self._connection.cursor()
         result = cursor.execute(query).fetchall()
 
-        breakpoint()
-
         return result
         
         
