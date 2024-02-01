@@ -1,3 +1,5 @@
+BEGIN;
+
 INSERT INTO survey (
 	   uid
 	   , is_open
@@ -12,3 +14,7 @@ INSERT INTO survey (
   , true
   , "Open Test Survey"
 );
+
+
+
+COMMIT;

@@ -12,4 +12,16 @@ class Sqlite3Driver:
         cursor.execute("PRAGMA foreign_keys = ON;")
 
     
+    def get_open_surveys(self):
 
+        query = (
+            f"SELECT * FROM survey WHERE is_open IS TRUE;"
+        )
+        cursor = self._connection.cursor()
+        result = cursor.execute(query).fetchall()
+
+        breakpoint()
+
+        return result
+        
+        
