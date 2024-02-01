@@ -16,6 +16,6 @@ class BaseSettings():
 
 
 class AppSettings(BaseSettings):
-    test_value: int
+    sqlite_file: str
 
 settings = AppSettings()

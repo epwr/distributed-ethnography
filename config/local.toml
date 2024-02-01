@@ -1,2 +1,2 @@
 [env_variables]
-TEST_VALUE = 0
+SQLITE_FILE = "data/database.sqlite3"
