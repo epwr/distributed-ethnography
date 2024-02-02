@@ -1,0 +1,16 @@
+* {
+	margin: 0;
+	box-sizing: border-box;
+	border: 1px grey solid;
+}
+
+root {
+	--font-size: 1.4em;
+
+	font-family: Helvetica Arial sans-serif;
+	font-size: var(--font-size);
+}
+
+
+
+
