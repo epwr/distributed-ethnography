@@ -21,7 +21,7 @@ test: venv
 coverage: venv
 	touch .gitignore  # used to force make to run test every time 
 	$(shell yq -o='shell' '.env_variables' config/testing.toml | tr '\n' ' ' | sed 's|$$|./$(VENV)/bin/coverage run -m pytest|')
-	./$(VENV)/bin/coverage report
+	./$(VENV)/bin/coverage report --show-missing --fail-under=100
 
 run: venv
 	touch .gitignore  # used to force make to run command every time 
