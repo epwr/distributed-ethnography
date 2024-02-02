@@ -2,7 +2,7 @@ import pytest
 
 from app.data_service import DataService
 from app.data_service.models import Survey
-from app.config import settings
+
 
 @pytest.fixture
 def data_service(populated_database_driver) -> DataService:
