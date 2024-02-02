@@ -4,9 +4,9 @@ import pytest
 from app.data_service.models import Survey
 
 
-def test_sqlite3_driver_enforces_foreign_key_constraints(empty_database_driver):
+def test_sqlite3_driver_enforces_foreign_key_constraints(empty_db_driver):
 
-    cursor = empty_database_driver._get_cursor()
+    cursor = empty_db_driver._get_cursor()
 
     with pytest.raises(sqlite3.IntegrityError):
         cursor.execute(
@@ -17,9 +17,9 @@ def test_sqlite3_driver_enforces_foreign_key_constraints(empty_database_driver):
             ");"
         )
 
-def test_sqlite3_driver_can_get_list_open_surveys(populated_database_driver):
+def test_sqlite3_driver_can_get_list_open_surveys(populated_db_driver):
     
-    surveys = populated_database_driver.get_open_surveys()
+    surveys = populated_db_driver.get_open_surveys()
 
     assert len(surveys) == 1
     for survey in surveys:

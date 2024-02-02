@@ -9,9 +9,9 @@ from app.data_service.models import Survey
     ('test_name 1', False, '48c19f90-2e81-48d9-b194-a1611c999836'),
     ('garbalaksdc', True,  '48c19f90-2e81-48d9-b194-a1611c999836'),
 ])
-def test_convert_sqlite3_row_to_survey_model(empty_database_driver, uid, name, is_open):
+def test_convert_sqlite3_row_to_survey_model(empty_db_driver, uid, name, is_open):
 
-    cursor = empty_database_driver._connection.cursor()
+    cursor = empty_db_driver._connection.cursor()
     cursor.execute(
         "INSERT INTO survey (uid, name, is_open) VALUES "
         f'("{uid}", "{name}", {is_open} );'

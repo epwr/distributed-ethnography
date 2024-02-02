@@ -5,10 +5,10 @@ from app.data_service.models import Survey
 
 
 @pytest.fixture
-def data_service(populated_database_driver) -> DataService:
+def data_service(populated_db_driver) -> DataService:
 
     return DataService(
-        driver=populated_database_driver
+        driver=populated_db_driver
     )
 
 def test_data_service(data_service):
