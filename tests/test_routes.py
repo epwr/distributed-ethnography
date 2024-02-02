@@ -5,7 +5,7 @@ from app.routes import app
 @pytest.mark.parametrize('endpoint', (
     '/',
 ))
-def test_get_requests_provide_an_html_page(endpoint, patch_data_service):
+def test_get_requests_provide_an_html_page(endpoint):
 
     client = app.test_client()
     response = client.get(endpoint)
@@ -20,7 +20,7 @@ def test_get_requests_provide_an_html_page(endpoint, patch_data_service):
 @pytest.mark.parametrize('endpoint', (
     '/surveys',
 ))
-def test_get_requests_return_partial_html_if_htmx_headers_are_present(endpoint, patch_data_service):
+def test_get_requests_return_partial_html_if_htmx_headers_are_present(endpoint):
 
     client = app.test_client()
     response = client.get(endpoint, headers={"Hx-Request": 'true'})
@@ -34,7 +34,7 @@ def test_get_requests_return_partial_html_if_htmx_headers_are_present(endpoint, 
 @pytest.mark.parametrize('endpoint, expected_redirect', (
     ('/surveys', '/'),
 ))
-def test_htmx_endpoints_redirect_user_if_htmx_headers_not_present(endpoint, expected_redirect, patch_data_service):
+def test_htmx_endpoints_redirect_user_if_htmx_headers_not_present(endpoint, expected_redirect):
 
     client = app.test_client()
     response = client.get(endpoint)

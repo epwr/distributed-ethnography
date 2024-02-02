@@ -16,12 +16,13 @@ htmx = HTMX(app)
 jinja_partials.register_extensions(app)
 
 
-data_service = DataService(
-    Sqlite3Driver(
-        db_file=settings.sqlite_file
+@app.before_request
+def create_data_service():
+    app.data_service = DataService(
+        Sqlite3Driver(
+            db_file=settings.sqlite_file
+        )
     )
-)
-
 
 @app.route('/')
 def get_index_page():
@@ -32,7 +33,7 @@ def get_index_page():
 @htmx_partial(template="molecules/survey_list.html", redirection="/")
 def get_test_values():
 
-    surveys = data_service.get_open_surveys()
+    surveys = app.data_service.get_open_surveys()
     
     return {
         'surveys': surveys
