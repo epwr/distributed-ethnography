@@ -1,9 +1,6 @@
 import pytest
 from app.routes import app
 
-
-# TODO: test with more than just 1 version of HTMX headers
-
 @pytest.fixture
 def patch_db_driver(populated_db_driver, monkeypatch):
 
