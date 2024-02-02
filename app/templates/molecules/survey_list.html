@@ -1,0 +1,5 @@
+<div>
+  {% for survey in surveys %}=
+	{{ render_partial('atoms/survey_card.html', survey=survey) }}
+  {% endfor %}
+</div>

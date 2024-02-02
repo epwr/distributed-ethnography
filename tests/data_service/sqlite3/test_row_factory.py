@@ -1,19 +1,32 @@
+import pytest
 from uuid import UUID
 
-from app.data_service.sqlite3.model_factory import convert_row_to_model
+from app.data_service.sqlite3.model_factory import fetch_query_results_as_model
 from app.data_service.models import Survey
 
 
-def test_convert_sqlite3_row_to_survey_model(test_database_driver):
+@pytest.mark.parametrize("name, is_open, uid", [
+    ('test_name 1', False, '48c19f90-2e81-48d9-b194-a1611c999836'),
+    ('garbalaksdc', True,  '48c19f90-2e81-48d9-b194-a1611c999836'),
+])
+def test_convert_sqlite3_row_to_survey_model(empty_database_driver, uid, name, is_open):
 
-    cursor = test_database_driver._connection.cursor()
-    survey_results = cursor.execute("SELECT * FROM survey;").fetchall()
+    cursor = empty_database_driver._connection.cursor()
+    cursor.execute(
+        "INSERT INTO survey (uid, name, is_open) VALUES "
+        f'("{uid}", "{name}", {is_open} );'
+    )
+    cursor.execute("SELECT * FROM survey;")
+    
+    surveys = fetch_query_results_as_model(cursor, Survey)
 
-    for row in survey_results:
+    assert len(surveys) == 1
 
-        survey = convert_row_to_model(Survey, row)
-
-        assert isinstance(survey, Survey)
-        assert survey.is_open == row['is_open']
-        assert survey.uid == UUID(row['uid'])
-        assert survey.name == row['name']
+    survey = surveys[0]
+    assert isinstance(survey, Survey)
+    assert isinstance(survey.is_open, bool)
+    assert survey.is_open == is_open
+    assert isinstance(survey.uid, UUID)
+    assert survey.uid == UUID(uid)
+    assert isinstance(survey.name, str)
+    assert survey.name == name

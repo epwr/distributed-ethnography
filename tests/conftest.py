@@ -6,13 +6,13 @@ from app.data_service.sqlite3 import Sqlite3Driver
 
 
 @pytest.fixture
-def asset_path():
+def asset_path() -> Path:
 
     return Path(__file__).parent / "test_assets"
 
 
 @pytest.fixture
-def test_database_driver(asset_path):
+def empty_database_driver(asset_path) -> Sqlite3Driver:
 
     driver = Sqlite3Driver(settings.sqlite_file)
     cursor = driver._connection.cursor()
@@ -22,10 +22,17 @@ def test_database_driver(asset_path):
         query = infile.read()
     cursor.executescript(query)
 
+    return driver
+
+@pytest.fixture
+def populated_database_driver(empty_database_driver: Sqlite3Driver, asset_path: Path) -> Sqlite3Driver:
+
+    cursor = empty_database_driver._connection.cursor()
+    
     initial_data_filename = asset_path / "test_db_data.sql"
     with open(initial_data_filename) as infile:
         query = infile.read()
     cursor.executescript(query)
 
-    return driver
+    return empty_database_driver
 

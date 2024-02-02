@@ -1,6 +1,14 @@
 import sqlite3
 
 
-def convert_row_to_model(model_class: type[object], row: sqlite3.Row) -> object:
+def fetch_query_results_as_model(cursor: sqlite3.Cursor, model_class: type[object]) -> list[object]:
 
-    return None
+    column_names = map(
+        lambda t: t[0],
+        cursor.description
+    )  # cursor.description provides an odd format of column names
+
+    return [
+        model_class(**{key: value for key, value in zip(column_names, row)})
+        for row in cursor.fetchall()
+    ]

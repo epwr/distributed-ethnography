@@ -1,17 +1,25 @@
+import sqlite3
+import pytest
+
 from app.data_service.models import Survey
 
 
-def test_sqlite3_driver_enforces_foreign_key_constraints():
+def test_sqlite3_driver_enforces_foreign_key_constraints(empty_database_driver):
 
-    assert False
+    cursor = empty_database_driver._get_cursor()
 
-    # TODO: mock and ensure that each new connection calls "PRAGMA foreign_keys = ON;".
-    # TODO: maybe it's easier to just check if I can insert something that doesn't match FK constraints?
+    with pytest.raises(sqlite3.IntegrityError):
+        cursor.execute(
+            "INSERT INTO question (uid, survey_uid, question) VALUES ("
+            '    "ed7b2f97-cd9d-4786-9266-a9397172397b", '
+            '    "f54e6029-a7bd-4b74-a4a4-e0bbbe1435eb", '
+            '    "WHAT AM I???"'
+            ");"
+        )
 
-
-def test_sqlite3_driver_can_get_list_open_surveys(test_database_driver):
-
-    surveys = test_database_driver.get_open_surveys()
+def test_sqlite3_driver_can_get_list_open_surveys(populated_database_driver):
+    
+    surveys = populated_database_driver.get_open_surveys()
 
     assert len(surveys) == 1
     for survey in surveys:

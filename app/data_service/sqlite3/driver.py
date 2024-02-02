@@ -1,5 +1,7 @@
 import sqlite3
 
+from .model_factory import fetch_query_results_as_model
+from ..models import Survey
 
 class Sqlite3Driver:
 
@@ -12,15 +14,16 @@ class Sqlite3Driver:
         cursor = self._connection.cursor()
         cursor.execute("PRAGMA foreign_keys = ON;")
 
-    
+    def _get_cursor(self) -> sqlite3.Cursor:
+        return self._connection.cursor()
+
     def get_open_surveys(self):
 
         query = (
             f"SELECT * FROM survey WHERE is_open IS TRUE;"
         )
-        cursor = self._connection.cursor()
-        result = cursor.execute(query).fetchall()
+        cursor = self._get_cursor()
+        cursor.execute(query)
+        result = fetch_query_results_as_model(cursor, Survey)
 
         return result
-        
-        
