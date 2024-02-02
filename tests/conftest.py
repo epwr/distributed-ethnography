@@ -3,6 +3,7 @@ from pathlib import Path
 
 from app.config import settings
 from app.data_service.sqlite3 import Sqlite3Driver
+from app.data_service import DataService
 
 
 @pytest.fixture
@@ -36,3 +37,16 @@ def populated_database_driver(empty_database_driver: Sqlite3Driver, asset_path: 
 
     return empty_database_driver
 
+
+@pytest.fixture
+def patch_data_service(populated_database_driver, monkeypatch):
+
+    patched_data_service = DataService(
+        driver=populated_database_driver
+    )
+    
+    with monkeypatch.context() as m:
+        print("PATCHING DRIVER")
+        m.setattr('app.routes.data_service', patched_data_service)
+        yield
+    
