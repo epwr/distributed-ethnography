@@ -37,6 +37,12 @@ clean:
 	rm -rf $(VENV)
 	find . -type f -name '*.pyc' -delete
 
+
+setup-db:
+	$(shell yq -o='shell' '.env_variables.SQLITE_FILE' config/local.toml \
+	| tr '\n' ' ' \
+	| sed "s|value='\(.*\)'|sqlite3 '\1' < data/setup.sql|")
+
 .PHONY: all test venv run clean coverage
 
 
