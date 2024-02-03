@@ -2,9 +2,6 @@
 
 A battery included approach to running small surveys using a approach based in distributed ethnography. 
 
-
-
-
 ## Setup
 
 ### Toolchain
