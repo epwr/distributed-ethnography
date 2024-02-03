@@ -1,16 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="{{url_for('static', filename='index.css')}}" media="print" onload="this.media='all'">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Understanding</title>
-  <script src="https://unpkg.com/htmx.org@1.6.1/dist/htmx.js"></script>
-</head>
-<body>
+{% extends '_layout.html' %}
 
-    <div id="content" hx-get="/surveys" hx-trigger="load">Initial Content</div>
+{% block content %}
 
-</body>
-</html>
+<div id="content" hx-get="/surveys" hx-trigger="load">
+  Initial Content
+</div>
+
+{% endblock %}
+	

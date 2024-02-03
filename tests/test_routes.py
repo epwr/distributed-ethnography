@@ -55,7 +55,7 @@ def test_htmx_endpoints_redirect_user_if_htmx_headers_not_present(endpoint, expe
     assert response.location == expected_redirect
 
 @pytest.mark.parametrize('endpoint, filetype', (
-    ('/index.css', 'text/css'),
+    ('/style.css', 'text/css'),
 ))
 def test_static_files_can_be_served(endpoint, filetype):
 
