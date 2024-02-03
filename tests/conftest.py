@@ -1,9 +1,10 @@
 import pytest
 from pathlib import Path
+from uuid import uuid4
 
 from app.config import settings
 from app.data_service.sqlite3 import Sqlite3Driver
-from app.data_service import DataService
+from app.data_service.models import Survey
 
 
 @pytest.fixture
@@ -38,4 +39,13 @@ def populated_db_driver(empty_db_driver: Sqlite3Driver, asset_path: Path) -> Sql
     return empty_db_driver
 
 
+@pytest.fixture
+def test_survey_open():
+
+    # survey with a random UUID
+    return Survey(
+        name="Test Survey",
+        is_open=True,
+    )
+        
     

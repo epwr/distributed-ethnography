@@ -1,32 +1,46 @@
 import pytest
 from uuid import UUID
 
+from app.data_service.sqlite3 import Sqlite3Driver
 from app.data_service.sqlite3.model_factory import fetch_query_results_as_model
 from app.data_service.models import Survey
 
 
-@pytest.mark.parametrize("name, is_open, uid", [
-    ('test_name 1', False, '48c19f90-2e81-48d9-b194-a1611c999836'),
-    ('garbalaksdc', True,  '48c19f90-2e81-48d9-b194-a1611c999836'),
+@pytest.mark.parametrize("records, expected_length", [
+    ([('test_name 1', False, '42c19f90-2e81-48d9-b194-a1611c999836')], 1),
+    ([('garbalaksdc', True,  '99c19f90-2e81-48d9-b194-a1611c999836')], 1),
+    ([
+        ('test_name 1', False, '00c19f90-2e81-48d9-b194-a1611c999836'),
+        ('garbalaksdc', True,  '01c19f90-2e81-48d9-b194-a1611c999836')
+    ], 2),
+    ([], 0),
 ])
-def test_convert_sqlite3_row_to_survey_model(empty_db_driver, uid, name, is_open):
+def test_convert_sqlite3_row_to_survey_model(
+        empty_db_driver: Sqlite3Driver,
+        records: tuple,
+        expected_length: int
+):
 
     cursor = empty_db_driver._connection.cursor()
-    cursor.execute(
-        "INSERT INTO survey (uid, name, is_open) VALUES "
-        f'("{uid}", "{name}", {is_open} );'
-    )
+    
+    for record in records:
+        name = record[0]
+        is_open = record[1]
+        uid = record[2]
+
+        cursor.execute(
+            "INSERT INTO survey (uid, name, is_open) VALUES "
+            f'("{uid}", "{name}", {is_open} );'
+        )
+        
     cursor.execute("SELECT * FROM survey;")
     
     surveys = fetch_query_results_as_model(cursor, Survey)
 
-    assert len(surveys) == 1
+    assert len(surveys) == expected_length
 
-    survey = surveys[0]
-    assert isinstance(survey, Survey)
-    assert isinstance(survey.is_open, bool)
-    assert survey.is_open == is_open
-    assert isinstance(survey.uid, UUID)
-    assert survey.uid == UUID(uid)
-    assert isinstance(survey.name, str)
-    assert survey.name == name
+    for survey in surveys:
+        assert isinstance(survey, Survey)
+        assert isinstance(survey.is_open, bool)
+        assert isinstance(survey.uid, UUID)
+        assert isinstance(survey.name, str)

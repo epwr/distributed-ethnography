@@ -11,19 +11,31 @@ class Sqlite3Driver:
         self._connection.row_factory = sqlite3.Row
 
         # Ensure foreign key constraints are enforced on every connection
-        cursor = self._connection.cursor()
+        cursor = self._get_cursor()
         cursor.execute("PRAGMA foreign_keys = ON;")
 
     def _get_cursor(self) -> sqlite3.Cursor:
         return self._connection.cursor()
 
-    def get_open_surveys(self):
+    def get_open_surveys(self) -> list[Survey]:
 
         query = (
-            f"SELECT * FROM survey WHERE is_open IS TRUE;"
+            "SELECT * FROM survey WHERE is_open IS TRUE;"
         )
         cursor = self._get_cursor()
         cursor.execute(query)
         result = fetch_query_results_as_model(cursor, Survey)
 
         return result
+
+    def insert_survey(self, survey: Survey) -> None:
+
+        query = (
+            "INSERT INTO survey (uid, name, is_open) VALUES (?, ?, ?)"
+        )
+
+        cursor = self._get_cursor()
+        cursor.execute(
+            query,
+            (str(survey.uid), survey.name, survey.is_open)
+        )

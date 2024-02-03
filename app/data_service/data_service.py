@@ -9,3 +9,5 @@ class DataService:
     def get_open_surveys(self) -> list[Survey]:
         return self._driver.get_open_surveys()
 
+    def insert_survey(self, survey: Survey) -> None:
+        return self._driver.insert_survey(survey)
