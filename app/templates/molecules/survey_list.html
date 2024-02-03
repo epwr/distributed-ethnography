@@ -1,5 +1,9 @@
-<div>
-  {% for survey in surveys %}=
+<div class="surface">
+  {% if surveys|length == 0 %}
+    There are no open surveys.
+  {% else %}
+  {% for survey in surveys %}
 	{{ render_partial('atoms/survey_card.html', survey=survey) }}
   {% endfor %}
+  {% endif %}
 </div>

@@ -17,7 +17,7 @@ def asset_path() -> Path:
 def empty_db_driver(asset_path) -> Sqlite3Driver:
 
     driver = Sqlite3Driver(settings.sqlite_file)
-    cursor = driver._connection.cursor()
+    cursor = driver._get_cursor()
     
     sql_setup_filename = Path(__file__).parents[1] / 'data' / 'setup.sql'
     with open(sql_setup_filename) as infile:
@@ -29,13 +29,13 @@ def empty_db_driver(asset_path) -> Sqlite3Driver:
 @pytest.fixture
 def populated_db_driver(empty_db_driver: Sqlite3Driver, asset_path: Path) -> Sqlite3Driver:
 
-    cursor = empty_db_driver._connection.cursor()
+    cursor = empty_db_driver._get_cursor()
     
     initial_data_filename = asset_path / "test_db_data.sql"
     with open(initial_data_filename) as infile:
         query = infile.read()
     cursor.executescript(query)
-
+    
     return empty_db_driver
 
 

@@ -1,26 +1,25 @@
 * {
 	margin: 0;
-	box-sizing: border-box;
 }
 
-root {
+:root {
 	--font-size: 1.4em;
 
-
-	--colour-05: "#E6FEF7";
-    --colour-10: "#D3FDF1";
-    --colour-20: "#A6FCE2";
-    --colour-30: "#7AFAD4";
-    --colour-40: "#4EF9C5";
-    --colour-50: "#20F7B8";
-    --colour-60: "#08D99A";
-    --colour-70: "#06A273";
-    --colour-80: "#046C4D";
-    --colour-90: "#023626";
-    --colour-95: "#011911";
+	--colour-05: #E6FEF7;
+    --colour-10: #D3FDF1;
+    --colour-20: #A6FCE2;
+    --colour-30: #7AFAD4;
+    --colour-40: #4EF9C5;
+    --colour-50: #20F7B8;
+    --colour-60: #08D99A;
+    --colour-70: #06A273;
+    --colour-80: #046C4D;
+    --colour-90: #023626;
+    --colour-95: #011911;
 
 	--colour-error: "#E2725B";
 
+	--size-xs: 10px;
 	--size-s: 16px;
 	--size-m: 26px;
 	--size-l: 42px;
@@ -29,16 +28,30 @@ root {
 	font-family: Helvetica Arial sans-serif;
 	font-size: var(--font-size);
 
-	background: var(--colour-10);
+	background-color: var(--colour-20);
 	color: var(--colour-90);
+
+	margin: 0;
+	box-sizing: border-box;
 }
 
-#viewport: {
-	margin: 0 *;
+#viewport {
+	margin: 0 auto;
 	width: 715px;
+	display: flex;
+	flex-direction: column;
+	justify-content: stretch;
+	margin-top: var(--size-xl);
+}
+#viewport > * {
+	margin-bottom: var(--size-m);
 }
 
-
+.surface {
+	padding: var(--size-l);
+	border-radius: var(--size-s);
+	background-color: var(--colour-05);
+}
 
 .card {
 	padding: var(--size-m);
@@ -47,5 +60,20 @@ root {
 }
 
 
+
+.button {
+	padding: var(--size-xs);
+	border-radius: var(--size-xs);
+	background-color: var(--colour-80);
+	color: var(--colour-20);
+	width: calc(3 * var(--size-xl));
+	text-align: center;
+	cursor: pointer;
+	justify-self: start;
+}
+.button:hover {
+	background-color: var(--colour-90);
+	color: var(--colour-10);
+}
 
 

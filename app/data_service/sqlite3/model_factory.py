@@ -12,7 +12,6 @@ def fetch_query_results_as_model(cursor: sqlite3.Cursor, model_class: type[objec
         cursor.description
     ))  # cursor.description provides an odd format of column names
 
-    print(f"{results = }, {column_names = }")
     return [
         model_class(**{key: row[key] for key in column_names})
         for row in results
