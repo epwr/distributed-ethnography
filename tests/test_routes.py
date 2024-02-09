@@ -94,51 +94,40 @@ class TestGetHTMXEndpoints:
 
         assert response.data.decode('utf-8').startswith("<!DOCTYPE html")
 
+        
 class TestGetStaticFileEndpoints:
 
     """
     Test endpoints that respond to GET requests with static files.
     """
 
-    @pytest.fixture(params=(
+    @pytest.mark.parametrize('slug, mime_type', (
         ('/static/style.css', 'text/css'),
     ))
-    def test_case(self, request):
-        return {
-            'slug': request.param[0],
-            'mime_type': request.param[1],
-        }
-
-    def test_static_files_can_be_served(self, app_client, test_case: dict[str: str]):
+    def test_static_files_can_be_served(self, app_client, slug, mime_type):
 
         client = app.test_client()
-        response = client.get(test_case['slug'])
+        response = client.get(slug)
 
         assert response.status_code == 200
         assert 'Content-Type' in response.headers
-        assert test_case['mime_type'] in response.headers['Content-Type']
+        assert mime_type in response.headers['Content-Type']
 
 
 class TestPostHTMXFormEndpoints:
 
-    @pytest.fixture(params=(
+    @pytest.mark.parametrize('slug, data', (
         ('/surveys/new', {'name': 'endpoint test survey', 'is_open': True}),
     ))
-    def test_case(self, request):
-        return {
-            'slug': request.param[0],
-            'data': request.param[1],
-        }
-
-    
     def test_post_to_insert_survey_works(
             self,
             app_client,
-            test_case: dict[str: str | dict[str, str]],
+            slug: str,
+            data: dict[str, str],
             patch_db_driver: Sqlite3Driver,
     ):
 
-        response = app_client.post(test_case['slug'], json=test_case['data'])
+        response = app_client.post(slug, json=data)
 
         # Redirect to the new survey page
         assert response.status_code == 200
