@@ -15,7 +15,7 @@ venv: $(VENV)/bin/activate
 # Use `yq` to parse config/testing.toml and set the env variables. Then run pytest.
 test: venv
 	touch .gitignore  # used to force make to run test every time 
-	./$(VENV)/bin/mypy serve.py --strict
+	./$(VENV)/bin/mypy app --strict
 	$(shell yq -o='shell' '.env_variables' config/testing.toml \
 	| tr '\n' ' ' \
 	| sed 's|$$|./$(VENV)/bin/python3 -m pytest|')
