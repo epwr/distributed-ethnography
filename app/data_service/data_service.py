@@ -1,8 +1,8 @@
 from .sqlite3 import Sqlite3Driver
 from .models import Survey
 
-class DataService:
 
+class DataService:
     def __init__(self, driver: Sqlite3Driver):
         self._driver = driver
 

@@ -1,5 +1,3 @@
-__all__ = [
-    'Survey'
-]
+__all__ = ["Survey"]
 
 from .survey import Survey

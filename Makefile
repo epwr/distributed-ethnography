@@ -12,17 +12,20 @@ $(VENV)/bin/activate:
 
 venv: $(VENV)/bin/activate
 
-# Use `yq` to parse config/testing.toml and set the env variables. Then run pytest.
 test: venv
-	touch .gitignore  # used to force make to run test every time 
 	./$(VENV)/bin/mypy app --strict
+	./$(VENV)/bin/flake8 app tests
+
+# Use `yq` to parse config/testing.toml and set the env variables. Then run pytest.
 	$(shell yq -o='shell' '.env_variables' config/testing.toml \
 	| tr '\n' ' ' \
 	| sed 's|$$|./$(VENV)/bin/python3 -m pytest|')
 
-# Use `yq` to parse config/testing.toml and set the env variables. Then run coverage.
+
 coverage: venv
 	touch .gitignore  # used to force make to run test every time 
+
+# Use `yq` to parse config/testing.toml and set the env variables. Then run coverage.
 	$(shell yq -o='shell' '.env_variables' config/testing.toml \
 	| tr '\n' ' ' | \
 	sed 's|$$|./$(VENV)/bin/coverage run -m pytest|')

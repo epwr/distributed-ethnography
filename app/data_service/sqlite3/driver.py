@@ -4,10 +4,9 @@ from pathlib import Path
 from .model_factory import fetch_query_results_as_model
 from ..models import Survey
 
+
 class Sqlite3Driver:
-
     def __init__(self, db_file: Path) -> None:
-
         self._connection = sqlite3.connect(db_file)
         self._connection.row_factory = sqlite3.Row
 
@@ -19,10 +18,7 @@ class Sqlite3Driver:
         return self._connection.cursor()
 
     def get_open_surveys(self) -> list[Survey]:
-
-        query = (
-            "SELECT * FROM survey WHERE is_open IS TRUE;"
-        )
+        query = "SELECT * FROM survey WHERE is_open IS TRUE;"
         cursor = self._get_cursor()
         cursor.execute(query)
         result = fetch_query_results_as_model(cursor, Survey)
@@ -30,13 +26,7 @@ class Sqlite3Driver:
         return result
 
     def insert_survey(self, survey: Survey) -> None:
-
-        query = (
-            "INSERT INTO survey (uid, name, is_open) VALUES (?, ?, ?)"
-        )
+        query = "INSERT INTO survey (uid, name, is_open) VALUES (?, ?, ?)"
 
         cursor = self._get_cursor()
-        cursor.execute(
-            query,
-            (str(survey.uid), survey.name, survey.is_open)
-        )
+        cursor.execute(query, (str(survey.uid), survey.name, survey.is_open))
