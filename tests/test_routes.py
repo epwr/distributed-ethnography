@@ -114,7 +114,7 @@ class TestPostHTMXFormEndpoints:
         data: dict[str, str],
         patch_db_driver: Sqlite3Driver,
     ):
-        response = app_client.post(slug, json=data)
+        response = app_client.post(slug, data=data)
 
         # Redirect to the new survey page
         assert response.status_code == 200

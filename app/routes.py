@@ -42,7 +42,7 @@ def get_open_surveys() -> Dict[str, Any]:
 
 @app.route("/surveys/new", methods=["POST"])
 def create_survey() -> dict[str, Any]:
-    data: dict[str, Any] = request.json  # type: ignore
+    data: dict[str, Any] = request.form
 
     try:
         new_survey = Survey(
