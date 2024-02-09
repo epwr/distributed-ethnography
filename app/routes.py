@@ -1,10 +1,10 @@
 import logging
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request
 from flask_htmx import HTMX
 import jinja_partials
 
-from .flask_utils import htmx_or_json
+from .flask_utils import htmx_endpoint
 from .data_service import DataService, Sqlite3Driver
 from .config import settings
 from app.data_service.models import Survey
@@ -34,7 +34,7 @@ def get_admin_page():
 
 
 @app.route('/surveys')
-@htmx_or_json(template="molecules/survey_list.html")
+@htmx_endpoint(template="molecules/survey_list.html")
 def get_open_surveys():
 
     surveys = app.data_service.get_open_surveys()

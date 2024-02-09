@@ -1,19 +1,18 @@
 from functools import wraps
 
 from pydantic import BaseModel
-from flask import render_template, redirect, request
+from flask import request, render_template
 
-def htmx_or_json(template: str) -> callable:
 
+def htmx_endpoint(template: str) -> callable:
     """
-    Return partial HTML if the endpoint is called with HTMX headers, else
-    return JSON
+    Return either HTMX or HTML depending on request headers.
     """
 
     def decorator(f):
 
         @wraps(f)
-        def decorated_function(*args, **kwargs):
+        def decorated_route(*args, **kwargs):
 
             data = f(*args, **kwargs)
             request_is_htmx = all((
@@ -22,23 +21,17 @@ def htmx_or_json(template: str) -> callable:
             ))
 
             if request_is_htmx:
-                return render_template(template, **data)
+                resp = render_template(template, **data)
 
-            # Return as python primitives & collections to be parsed into JSON.
-            def recursive_parser(obj):
-                if isinstance(obj, BaseModel):
-                    return obj.model_dump()
-                if isinstance(obj, dict):
-                    return {
-                        recursive_parser(key): recursive_parser(value)
-                        for key, value in obj.items()
-                    }
-                if isinstance(obj, list):
-                    return [recursive_parser(item) for item in obj]
-                return obj
+            else:
+                resp = render_template(
+                    "_htmx_wrapper.html",
+                    partial=template,
+                    data=data
+                )
 
-            return recursive_parser(data)
+            return resp
 
-        return decorated_function
+        return decorated_route
 
     return decorator

@@ -49,7 +49,7 @@ def test_get_requests_return_partial_html_if_htmx_headers_are_present(endpoint: 
 @pytest.mark.parametrize('endpoint', (
     '/surveys',
 ))
-def test_htmx_endpoints_returns_json_if_htmx_headers_are_not_present(
+def test_htmx_endpoints_returns_full_html_page_if_htmx_headers_are_not_present(
         endpoint: str,
         patch_db_driver: Sqlite3Driver
 ):
@@ -59,7 +59,9 @@ def test_htmx_endpoints_returns_json_if_htmx_headers_are_not_present(
 
     assert response.status_code == 200
     assert 'Content-Type' in response.headers
-    assert 'application/json' in response.headers['Content-Type']
+    assert 'text/html' in response.headers['Content-Type']
+
+    assert response.data.decode('utf-8').startswith("<!DOCTYPE html")
 
 @pytest.mark.parametrize('endpoint, filetype', (
     ('/style.css', 'text/css'),
