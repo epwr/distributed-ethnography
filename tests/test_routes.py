@@ -22,7 +22,8 @@ def patch_db_driver(populated_db_driver, monkeypatch):
 
 @pytest.fixture
 def app_client():
-    return app.test_client()
+    with app.test_client() as client:
+        yield client
 
 
 class TestGetHTMLEndpoints:
