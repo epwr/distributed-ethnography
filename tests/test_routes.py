@@ -3,6 +3,12 @@ import pytest
 from app.routes import app
 from app.data_service.sqlite3 import Sqlite3Driver
 
+from tests.test_routes_utils import (
+    assert_response_is_valid_htmx,
+    assert_response_is_valid_html,
+    assert_response_is_valid,
+)
+
 
 @pytest.fixture
 def patch_db_driver(populated_db_driver, monkeypatch):
@@ -43,12 +49,7 @@ class TestGetHTMLEndpoints:
 
     def test_get_requests_provide_an_html_page(self, app_client, endpoint):
         response = app_client.get(endpoint)
-
-        assert response.status_code == 200
-        assert "Content-Type" in response.headers
-        assert "text/html" in response.headers["Content-Type"]
-
-        assert response.data.decode("utf-8").startswith("<!DOCTYPE html")
+        assert_response_is_valid_html(response)
 
 
 class TestGetHTMXEndpoints:
@@ -66,24 +67,13 @@ class TestGetHTMXEndpoints:
         self, endpoint: str, app_client, patch_db_driver
     ):
         response = app_client.get(endpoint, headers={"Hx-Request": "true"})
-
-        assert response.status_code == 200
-        assert "Content-Type" in response.headers
-        assert "text/html" in response.headers["Content-Type"]
-
-        assert not response.data.decode("utf-8").startswith("<!DOCTYPE html")
+        assert_response_is_valid_htmx(response)
 
     def test_htmx_endpoints_returns_html_page_if_htmx_headers_are_not_present(
         self, endpoint: str, app_client, patch_db_driver: Sqlite3Driver
     ):
-        client = app.test_client()
-        response = client.get(endpoint)
-
-        assert response.status_code == 200
-        assert "Content-Type" in response.headers
-        assert "text/html" in response.headers["Content-Type"]
-
-        assert response.data.decode("utf-8").startswith("<!DOCTYPE html")
+        response = app_client.get(endpoint)
+        assert_response_is_valid_html(response)
 
 
 class TestGetStaticFileEndpoints:
@@ -94,18 +84,17 @@ class TestGetStaticFileEndpoints:
 
     @pytest.mark.parametrize("slug, mime_type", (("/static/style.css", "text/css"),))
     def test_static_files_can_be_served(self, app_client, slug, mime_type):
-        client = app.test_client()
-        response = client.get(slug)
-
-        assert response.status_code == 200
-        assert "Content-Type" in response.headers
-        assert mime_type in response.headers["Content-Type"]
+        response = app_client.get(slug)
+        assert_response_is_valid(response, mime_type=mime_type)
 
 
 class TestPostHTMXFormEndpoints:
     @pytest.mark.parametrize(
         "slug, data",
-        (("/surveys/new", {"name": "endpoint test survey", "is_open": True}),),
+        (
+            ("/surveys/new", {"name": "test survey - open", "is_open": True}),
+            ("/surveys/new", {"name": "test survey - closed", "is_open": False}),
+        ),
     )
     def test_post_to_insert_survey_works(
         self,
@@ -115,8 +104,4 @@ class TestPostHTMXFormEndpoints:
         patch_db_driver: Sqlite3Driver,
     ):
         response = app_client.post(slug, data=data)
-
-        # Redirect to the new survey page
-        assert response.status_code == 200
-
-        # TODO: add that '/surveys/uid' returns same values.
+        assert_response_is_valid_htmx(response)
