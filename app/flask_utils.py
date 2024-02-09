@@ -1,18 +1,22 @@
 from functools import wraps
+from typing import Callable, Dict, Any
+from typing_extensions import ParamSpec
 
-from pydantic import BaseModel
 from flask import request, render_template
 
+P = ParamSpec('P')
 
-def htmx_endpoint(template: str) -> callable:
+def htmx_endpoint(template: str) -> Callable[
+        [Callable[..., Dict[str, Any]]], Callable[..., str]
+]:
     """
     Return either HTMX or HTML depending on request headers.
     """
 
-    def decorator(f):
+    def decorator(f: Callable[..., Dict[str, Any]]) -> Callable[..., str]:
 
         @wraps(f)
-        def decorated_route(*args, **kwargs):
+        def decorated_route(*args: P.args, **kwargs: P.kwargs) -> str:
 
             data = f(*args, **kwargs)
             request_is_htmx = all((

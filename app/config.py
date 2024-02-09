@@ -1,9 +1,9 @@
 import os
-
+from pathlib import Path
 
 class BaseSettings():
 
-    def __init__(self):
+    def __init__(self) -> None:
 
         for key, value_type in self.__annotations__.items():
 
@@ -12,7 +12,7 @@ class BaseSettings():
             settings_value = value_type(env_value)
             self.__setattr__(key, settings_value)
 
-    def __str__(self):
+    def __str__(self) -> str:
         string = f"{self.__class__}("
 
         for key in self.__annotations__.keys():
@@ -23,6 +23,7 @@ class BaseSettings():
 
 
 class AppSettings(BaseSettings):
-    sqlite_file: str
+    sqlite_file: Path
+
 
 settings = AppSettings()

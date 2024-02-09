@@ -1,7 +1,12 @@
 import sqlite3
+from typing import TypeVar
 
+T = TypeVar('T')
 
-def fetch_query_results_as_model(cursor: sqlite3.Cursor, model_class: type[object]) -> list[object]:
+def fetch_query_results_as_model(
+        cursor: sqlite3.Cursor,
+        model_class: type[T],
+) -> list[T]:
 
     results = cursor.fetchall()
     if len(results) == 0:
