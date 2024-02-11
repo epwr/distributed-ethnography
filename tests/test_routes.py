@@ -1,12 +1,15 @@
 import pytest
+from unittest.mock import MagicMock
 
 from app.routes import app
-from app.data_service.sqlite3 import Sqlite3Driver
+from app.data_service import DataService
+from app.models import Survey
 
 from tests.test_routes_utils import (
     assert_response_is_valid_htmx,
     assert_response_is_valid_html,
     assert_response_is_valid,
+    assert_mocked_class_has_method_call_on_object,
 )
 
 
@@ -22,6 +25,16 @@ def patch_db_driver(populated_db_driver, monkeypatch):
     monkeypatch.setattr("app.routes.DataService.__init__", patched_init)
 
     yield
+
+    monkeypatch.undo()
+
+
+@pytest.fixture
+def mock_data_service_class(monkeypatch):
+    data_service = MagicMock()
+    monkeypatch.setattr("app.routes.DataService", data_service)
+
+    yield data_service
 
     monkeypatch.undo()
 
@@ -47,7 +60,11 @@ class TestGetHTMLEndpoints:
     def endpoint(self, request):
         return request.param
 
-    def test_get_requests_provide_an_html_page(self, app_client, endpoint):
+    def test_get_requests_provide_an_html_page(
+        self,
+        app_client,
+        endpoint,
+    ):
         response = app_client.get(endpoint)
         assert_response_is_valid_html(response)
 
@@ -59,20 +76,47 @@ class TestGetHTMXEndpoints:
     HTMX responses, and to GET requests without HTMX headers with HTML responses.
     """
 
-    @pytest.fixture(params=("/surveys",))
-    def endpoint(self, request):
-        return request.param
+    test_cases = (
+        (
+            "/surveys",
+            "get_open_surveys",
+        ),
+    )
 
+    @pytest.mark.parametrize(
+        "slug, expected_data_service_call",
+        test_cases,
+    )
     def test_get_requests_return_partial_html_if_htmx_headers_are_present(
-        self, endpoint: str, app_client, patch_db_driver
+        self,
+        app_client,
+        mock_data_service_class,
+        slug: str,
+        expected_data_service_call: str,
     ):
-        response = app_client.get(endpoint, headers={"Hx-Request": "true"})
+        response = app_client.get(slug, headers={"Hx-Request": "true"})
+        assert_mocked_class_has_method_call_on_object(
+            mock_class=mock_data_service_class,
+            method_call=expected_data_service_call,
+        )
         assert_response_is_valid_htmx(response)
 
+    @pytest.mark.parametrize(
+        "slug, expected_data_service_call",
+        test_cases,
+    )
     def test_htmx_endpoints_returns_html_page_if_htmx_headers_are_not_present(
-        self, endpoint: str, app_client, patch_db_driver: Sqlite3Driver
+        self,
+        app_client,
+        mock_data_service_class,
+        slug: str,
+        expected_data_service_call: str,
     ):
-        response = app_client.get(endpoint)
+        response = app_client.get(slug)
+        assert_mocked_class_has_method_call_on_object(
+            mock_class=mock_data_service_class,
+            method_call=expected_data_service_call,
+        )
         assert_response_is_valid_html(response)
 
 
@@ -89,19 +133,61 @@ class TestGetStaticFileEndpoints:
 
 
 class TestPostHTMXFormEndpoints:
-    @pytest.mark.parametrize(
-        "slug, data",
+    test_cases = (
         (
-            ("/surveys/new", {"name": "test survey - open", "is_open": True}),
-            ("/surveys/new", {"name": "test survey - closed", "is_open": False}),
+            "/surveys/new",
+            {"name": "test survey - open", "is_open": True},
+            "insert_survey",
+            Survey,
+        ),
+        (
+            "/surveys/new",
+            {"name": "test survey - closed", "is_open": False},
+            "insert_survey",
+            Survey,
         ),
     )
-    def test_post_to_insert_survey_works(
+
+    @pytest.mark.parametrize(
+        "slug, data, expected_data_service_call, argument_class",
+        test_cases,
+    )
+    def test_post_requests_can_return_htmx(
         self,
         app_client,
         slug: str,
         data: dict[str, str],
-        patch_db_driver: Sqlite3Driver,
+        expected_data_service_call: str,
+        argument_class: str,
+        mock_data_service_class: DataService,
+    ):
+        response = app_client.post(slug, data=data, headers={"Hx-Request": "true"})
+
+        assert_mocked_class_has_method_call_on_object(
+            mock_class=mock_data_service_class,
+            method_call=expected_data_service_call,
+            argument_types=[argument_class],
+        )
+        assert_response_is_valid_htmx(response)
+
+    @pytest.mark.parametrize(
+        "slug, data, expected_data_service_call, argument_class",
+        test_cases,
+    )
+    def test_post_requests_can_return_html(
+        self,
+        app_client,
+        slug: str,
+        data: dict[str, str],
+        expected_data_service_call: str,
+        argument_class: str,
+        mock_data_service_class: DataService,
     ):
         response = app_client.post(slug, data=data)
-        assert_response_is_valid_htmx(response)
+
+        assert_mocked_class_has_method_call_on_object(
+            mock_class=mock_data_service_class,
+            method_call=expected_data_service_call,
+            argument_types=[argument_class],
+        )
+        assert_response_is_valid_html(response)

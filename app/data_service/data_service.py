@@ -1,5 +1,5 @@
 from .sqlite3 import Sqlite3Driver
-from .models import Survey
+from app.models import Survey
 
 
 class DataService:

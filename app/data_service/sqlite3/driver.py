@@ -2,7 +2,7 @@ import sqlite3
 from pathlib import Path
 
 from .model_factory import fetch_query_results_as_model
-from ..models import Survey
+from app.models import Survey
 
 
 class Sqlite3Driver:

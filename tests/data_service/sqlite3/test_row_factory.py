@@ -3,7 +3,7 @@ from uuid import UUID
 
 from app.data_service.sqlite3 import Sqlite3Driver
 from app.data_service.sqlite3.model_factory import fetch_query_results_as_model
-from app.data_service.models import Survey
+from app.models import Survey
 
 
 @pytest.mark.parametrize(

@@ -1,7 +1,7 @@
 import pytest
 
 from app.data_service import DataService
-from app.data_service.models import Survey
+from app.models import Survey
 
 
 @pytest.fixture

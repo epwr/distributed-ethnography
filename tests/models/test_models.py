@@ -1,6 +1,6 @@
 import pytest
 
-from app.data_service.models import Survey
+from app.models import Survey
 
 
 @pytest.mark.parametrize(

@@ -7,7 +7,7 @@ import jinja_partials  # type: ignore
 from .flask_utils import htmx_endpoint
 from .data_service import DataService, Sqlite3Driver
 from .config import settings
-from app.data_service.models import Survey
+from app.models import Survey
 
 logging.info(f"Running with settings: {settings}")
 
@@ -41,6 +41,7 @@ def get_open_surveys() -> Dict[str, Any]:
 
 
 @app.route("/surveys/new", methods=["POST"])
+@htmx_endpoint(template="molecules/survey_submitted.html")
 def create_survey() -> dict[str, Any]:
     data: dict[str, Any] = request.form
 
@@ -50,7 +51,7 @@ def create_survey() -> dict[str, Any]:
             is_open=data["is_open"],
         )
     except KeyError:
-        abort(400, 'Request should contain "name" and "is_open" fields.')
+        abort(400, 'Survey submission should contain "name" and "is_open" fields.')
 
     data_service: DataService = app.data_service  # type: ignore[attr-defined]
     data_service.insert_survey(new_survey)

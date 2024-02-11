@@ -5,9 +5,9 @@
 <h3>
   Surveys
 </h3>
-<div id="content" hx-get="/surveys" hx-trigger="load">
-  
+<div id="content" hx-get="/surveys" hx-trigger="load">  
 </div>
-<div class="button">New Survey</div>
+
+{{render_partial("atoms/button.html", text="New Survey", to="/surveys/new")}}
 
 {% endblock %}

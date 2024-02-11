@@ -1,7 +1,7 @@
 import sqlite3
 import pytest
 
-from app.data_service.models import Survey
+from app.models import Survey
 
 
 def test_sqlite3_driver_enforces_foreign_key_constraints(empty_db_driver):

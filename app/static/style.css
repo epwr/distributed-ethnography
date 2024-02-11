@@ -70,6 +70,7 @@
 	text-align: center;
 	cursor: pointer;
 	justify-self: start;
+	text-decoration: none;
 }
 .button:hover {
 	background-color: var(--colour-90);

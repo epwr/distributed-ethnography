@@ -3,7 +3,7 @@ from pathlib import Path
 
 from app.config import settings
 from app.data_service.sqlite3 import Sqlite3Driver
-from app.data_service.models import Survey
+from app.models import Survey
 
 
 @pytest.fixture
