@@ -1,0 +1,18 @@
+{% extends '_layout.html' %}
+
+{% block content %}
+<h3>New Survey</h3>
+
+<form hx-post="/surveys/new" hx-swap="true">
+  <div>
+    <label>Survey Title</label>
+    <input name="name">
+  </div>
+  <div>
+    <label>Publish?</label>
+    <input type="checkbox" name="is_open">
+  </div>
+  <button class="button">Submit</button>
+</form>
+
+{% endblock %}

@@ -51,12 +51,7 @@ class TestGetHTMLEndpoints:
     Test endpoints that respond to GET requests with HTML pages.
     """
 
-    @pytest.fixture(
-        params=(
-            "/",
-            "/admin",
-        )
-    )
+    @pytest.fixture(params=("/", "/admin", "/surveys/new"))
     def endpoint(self, request):
         return request.param
 
@@ -142,7 +137,9 @@ class TestPostHTMXFormEndpoints:
         ),
         (
             "/surveys/new",
-            {"name": "test survey - closed", "is_open": False},
+            {
+                "name": "test survey - closed"
+            },  # unchecked checkboxes are represented as missing.
             "insert_survey",
             Survey,
         ),

@@ -40,6 +40,11 @@ def get_open_surveys() -> Dict[str, Any]:
     return {"surveys": surveys}
 
 
+@app.route("/surveys/new")
+def get_create_survey_page() -> str:
+    return render_template("create_survey.html")
+
+
 @app.route("/surveys/new", methods=["POST"])
 @htmx_endpoint(template="molecules/survey_submitted.html")
 def create_survey() -> dict[str, Any]:
@@ -48,9 +53,10 @@ def create_survey() -> dict[str, Any]:
     try:
         new_survey = Survey(
             name=data["name"],
-            is_open=data["is_open"],
+            is_open=data.get("is_open", False),
         )
     except KeyError:
+        logging.error(f"/surveys/new received a submission of the following: {data}")
         abort(400, 'Survey submission should contain "name" and "is_open" fields.')
 
     data_service: DataService = app.data_service  # type: ignore[attr-defined]

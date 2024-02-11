@@ -2,5 +2,10 @@
   <p>
     Survey submitted!
   </p>
-  {{ render_partial("atoms/button.html", text="View Survey", to="/survey/survey_uid") }}
+  <p>
+	<small>
+	  UID: {{survey_uid}}
+	</small>
+  </p>
+  {{ render_partial("atoms/button.html", text="View Survey", to="/survey/" + survey_uid) }}
 </div>

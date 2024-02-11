@@ -61,7 +61,13 @@
 
 
 
+button {
+	border: inherit;
+	font-size: inherit;
+	font-family: inherit;
+}
 .button {
+	margin-top: var(--size-s);
 	padding: var(--size-xs);
 	border-radius: var(--size-xs);
 	background-color: var(--colour-80);
