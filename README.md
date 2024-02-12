@@ -42,5 +42,5 @@ Then, run `make setup-db`.
 
 ## References:
 
-	- Mausch, K., Harris, D., Heather, E., Jones, E., Yim, J., & Hauser, M. (2018). Households’ aspirations for rural development through agriculture. Outlook on Agriculture, 47(2), 108-115. https://doi.org/10.1177/0030727018766940
-	- Snowden, D., (2016) _How leaders change culture through small actions_ [Conference presentation]. Bangor University. https://www.youtube.com/watch?v=MsLmjoAp_Dg
+- Mausch, K., Harris, D., Heather, E., Jones, E., Yim, J., & Hauser, M. (2018). Households’ aspirations for rural development through agriculture. Outlook on Agriculture, 47(2), 108-115. https://doi.org/10.1177/0030727018766940
+- Snowden, D., (2016) _How leaders change culture through small actions_ [Conference presentation]. Bangor University. https://www.youtube.com/watch?v=MsLmjoAp_Dg
