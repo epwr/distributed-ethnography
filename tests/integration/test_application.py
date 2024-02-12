@@ -70,8 +70,8 @@ class TestDataPersistency:
         with open(sql_setup_filename) as infile:
             query = infile.read()
 
-        cursor = data_service._driver._get_cursor()
-        cursor.executescript(query)
+        with data_service._driver._get_cursor() as cursor:
+            cursor.executescript(query)
 
         with Pool(processes=5) as pool:
             pool.map(TestDataPersistency.create_survey_in_database, [temp_file] * 5)

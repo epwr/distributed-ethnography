@@ -1,2 +1,2 @@
 [env_variables]
-SQLITE_FILE = ":memory:"
+SQLITE_FILE = "/tmp/testing-db.sqlite"

@@ -24,21 +24,19 @@ from app.models import Survey
 def test_convert_sqlite3_row_to_survey_model(
     empty_db_driver: Sqlite3Driver, records: tuple, expected_length: int
 ):
-    cursor = empty_db_driver._connection.cursor()
+    with empty_db_driver._get_cursor() as cursor:
+        for record in records:
+            name = record[0]
+            is_open = record[1]
+            uid = record[2]
 
-    for record in records:
-        name = record[0]
-        is_open = record[1]
-        uid = record[2]
+            cursor.execute(
+                "INSERT INTO survey (uid, name, is_open) VALUES "
+                f'("{uid}", "{name}", {is_open} );'
+            )
 
-        cursor.execute(
-            "INSERT INTO survey (uid, name, is_open) VALUES "
-            f'("{uid}", "{name}", {is_open} );'
-        )
-
-    cursor.execute("SELECT * FROM survey;")
-
-    surveys = fetch_query_results_as_model(cursor, Survey)
+        cursor.execute("SELECT * FROM survey;")
+        surveys = fetch_query_results_as_model(cursor, Survey)
 
     assert len(surveys) == expected_length
 
