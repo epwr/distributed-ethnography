@@ -51,6 +51,9 @@ def create_survey() -> dict[str, Any]:
     data: dict[str, Any] = request.form
 
     try:
+        for key in data.keys():
+            if key not in ("name", "is_open"):
+                raise KeyError(f"Received unexpected key '{key}'")
         new_survey = Survey(
             name=data["name"],
             is_open=data.get("is_open", False),

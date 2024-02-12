@@ -28,7 +28,7 @@ coverage: venv
 # Use `yq` to parse config/testing.toml and set the env variables. Then run coverage.
 	$(shell yq -o='shell' '.env_variables' config/testing.toml \
 	| tr '\n' ' ' | \
-	sed 's|$$|./$(VENV)/bin/coverage run -m pytest|')
+	sed 's|$$|./$(VENV)/bin/coverage run --omit=tests/* -m pytest|')
 	./$(VENV)/bin/coverage report --show-missing --fail-under=100
 
 run: venv

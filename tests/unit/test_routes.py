@@ -165,3 +165,17 @@ class TestPostHTMXFormEndpoints:
             argument_types=[argument_class],
         )
         assert_response_is_valid_html(response)
+
+    @pytest.mark.parametrize(
+        "slug, data",
+        (
+            ("/surveys/new", {}),
+            (
+                "/surveys/new",
+                {"name": "Testing", "uid": "bb92a5f5-7d62-4e77-9cbb-c8c903c4e65f"},
+            ),
+        ),
+    )
+    def test_malformed_requests_return_400_code(self, app_client, slug, data) -> None:
+        response = app_client.post(slug, data=data)
+        assert response.status_code == 400

@@ -27,3 +27,24 @@ def test_all_models_enforce_type_hints(model_class, arguments):
     # Check that all models fields are set
     for key in model.__annotations__.keys():
         assert model.__getattribute__(key) is not None
+
+
+@pytest.mark.parametrize(
+    "value1, value2, expected",
+    (
+        (Survey(name="Test", is_open=True), 5, False),
+        (Survey(name="Test", is_open=True), Survey(name="Test", is_open=True), False),
+        (
+            Survey(
+                uid="bb92a5f5-7d62-4e77-9cbb-c8c903c4e65f", name="Test", is_open=True
+            ),
+            Survey(
+                uid="bb92a5f5-7d62-4e77-9cbb-c8c903c4e65f", name="Test", is_open=True
+            ),
+            True,
+        ),
+    ),
+)
+def test_equality_function_works_on_all_functions(value1, value2, expected):
+    result = value1 == value2
+    assert result == expected

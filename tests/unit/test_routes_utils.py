@@ -30,7 +30,6 @@ def assert_mocked_class_has_method_call_on_object(
     Assert that a mocked class was instantiated and then a method was called on
     the object.
 
-
     If arguments is passed, then assert that the method was called once with the
     provided arguments.
 
