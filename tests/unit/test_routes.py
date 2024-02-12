@@ -25,13 +25,18 @@ def mock_data_service_class(monkeypatch):
 class TestGetHTMLEndpoints:
 
     """
-    Test endpoints that respond to GET requests with HTML pages.
+    Test basic GET endpoints.
     """
 
-    @pytest.fixture(params=("/", "/admin", "/surveys/new"))
-    def endpoint(self, request):
-        return request.param
-
+    @pytest.mark.parametrize(
+        "endpoint",
+        (
+            "/",
+            "/admin",
+            "/surveys/new",
+            "/surveys/00000000-a087-4fb6-a123-24ff30263530",  # Open Test Survey
+        ),
+    )
     def test_get_requests_provide_an_html_page(
         self,
         app_client,
@@ -39,6 +44,18 @@ class TestGetHTMLEndpoints:
     ):
         response = app_client.get(endpoint)
         assert_response_is_valid_html(response)
+
+    @pytest.mark.parametrize(
+        "endpoint",
+        ("/surveys/00000000-9c88-4b81-9de4-bac7444fbb0a",),  # Closed Test Survey
+    )
+    def test_get_request_returns_404(
+        self,
+        app_client,
+        endpoint,
+    ):
+        response = app_client.get(endpoint)
+        assert response.status_code == 404
 
 
 class TestGetHTMXEndpoints:

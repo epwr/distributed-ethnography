@@ -1,5 +1,6 @@
 import sqlite3
 import pytest
+from uuid import UUID
 
 from app.models import Survey
 
@@ -22,6 +23,33 @@ def test_sqlite3_driver_can_get_list_open_surveys(populated_db_driver):
     assert len(surveys) == 1
     for survey in surveys:
         assert isinstance(survey, Survey)
+
+
+@pytest.mark.parametrize(
+    "survey_uid",
+    (
+        "00000000-9c88-4b81-9de4-bac7444fbb0a",
+        "00000000-a087-4fb6-a123-24ff30263530",
+    ),
+)
+def test_driver_get_survey_returns_appropriate_survey(populated_db_driver, survey_uid):
+    survey = populated_db_driver.get_survey(survey_uid=survey_uid)
+    assert survey is not None
+    assert survey.uid == UUID(survey_uid)
+
+
+@pytest.mark.parametrize(
+    "survey_uid",
+    (
+        "99999999-9c88-4b81-9de4-bac7444fbb0a",
+        "99999999-a087-4fb6-a123-24ff30263530",
+    ),
+)
+def test_driver_get_survey_returns_none_when_no_survey_found(
+    populated_db_driver, survey_uid
+):
+    survey = populated_db_driver.get_survey(survey_uid=UUID(survey_uid))
+    assert survey is None
 
 
 def test_sqlite3_driver_throws_error_if_adding_a_survey_that_already_exists(

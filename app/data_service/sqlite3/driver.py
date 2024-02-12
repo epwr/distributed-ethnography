@@ -2,6 +2,7 @@ import sqlite3
 from pathlib import Path
 from typing import Generator
 from contextlib import contextmanager
+from uuid import UUID
 
 from .model_factory import fetch_query_results_as_model
 from app.models import Survey
@@ -28,6 +29,17 @@ class Sqlite3Driver:
             result = fetch_query_results_as_model(cursor, Survey)
 
         return result
+
+    def get_survey(self, survey_uid: UUID) -> Survey | None:
+        query = "SELECT * FROM survey WHERE uid = ? LIMIT 1;"
+
+        with self._get_cursor() as cursor:
+            cursor.execute(query, (str(survey_uid),))
+            result = fetch_query_results_as_model(cursor, Survey)
+
+        if len(result) > 0:
+            return result[0]
+        return None
 
     def insert_survey(self, survey: Survey) -> None:
         query = "INSERT INTO survey (uid, name, is_open) VALUES (?, ?, ?)"

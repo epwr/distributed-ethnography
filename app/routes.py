@@ -1,5 +1,6 @@
 import logging
 from typing import Dict, Any
+from uuid import UUID
 
 from flask import Flask, render_template, request, abort
 import jinja_partials  # type: ignore
@@ -35,9 +36,22 @@ def get_admin_page() -> str:
 @app.route("/surveys")
 @htmx_endpoint(template="molecules/survey_list.html")
 def get_open_surveys() -> Dict[str, Any]:
-    surveys = app.data_service.get_open_surveys()  # type: ignore[attr-defined]
+    data_service: DataService = app.data_service  # type: ignore[attr-defined]
+    surveys = data_service.get_open_surveys()
 
     return {"surveys": surveys}
+
+
+@app.route("/surveys/<uid>")
+def get_survey(uid: str) -> str:
+    data_service: DataService = app.data_service  # type: ignore[attr-defined]
+    survey_uid = UUID(uid)
+    survey = data_service.get_survey_if_open(survey_uid)
+
+    if survey is None:
+        abort(404, "Could not find a survey with that UUID.")
+
+    return render_template("survey.html", survey=survey)
 
 
 @app.route("/surveys/new")
