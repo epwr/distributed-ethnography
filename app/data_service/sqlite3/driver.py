@@ -1,5 +1,6 @@
 import sqlite3
 from pathlib import Path
+import logging
 
 from .model_factory import fetch_query_results_as_model
 from app.models import Survey
@@ -7,6 +8,8 @@ from app.models import Survey
 
 class Sqlite3Driver:
     def __init__(self, db_file: Path) -> None:
+        logging.info(f"Sql3Driver connecting to db_file '{db_file}'")
+
         self._connection = sqlite3.connect(db_file)
         self._connection.row_factory = sqlite3.Row
 
