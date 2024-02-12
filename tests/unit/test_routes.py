@@ -5,28 +5,12 @@ from app.routes import app
 from app.data_service import DataService
 from app.models import Survey
 
-from tests.test_routes_utils import (
+from tests.unit.test_routes_utils import (
     assert_response_is_valid_htmx,
     assert_response_is_valid_html,
     assert_response_is_valid,
     assert_mocked_class_has_method_call_on_object,
 )
-
-
-@pytest.fixture
-def patch_db_driver(populated_db_driver, monkeypatch):
-    """
-    Ensure every test uses the populated test database.
-    """
-
-    def patched_init(self, driver):
-        self._driver = populated_db_driver
-
-    monkeypatch.setattr("app.routes.DataService.__init__", patched_init)
-
-    yield
-
-    monkeypatch.undo()
 
 
 @pytest.fixture

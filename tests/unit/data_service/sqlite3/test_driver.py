@@ -37,11 +37,11 @@ def test_sqlite3_driver_throws_error_if_adding_a_survey_that_already_exists(
 
 def test_sqlite3_driver_can_query_an_added_survey(
     empty_db_driver,
-    test_survey_open,
+    new_survey_open,
 ):
-    empty_db_driver.insert_survey(test_survey_open)
+    empty_db_driver.insert_survey(new_survey_open)
 
     surveys = empty_db_driver.get_open_surveys()
 
     assert len(surveys) == 1
-    assert surveys[0] == test_survey_open
+    assert surveys[0] == new_survey_open

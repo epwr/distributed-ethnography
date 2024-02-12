@@ -39,7 +39,7 @@ def populated_db_driver(
 
 
 @pytest.fixture
-def test_survey_open():
+def new_survey_open():
     # survey with a random UUID
     return Survey(
         name="Test Survey",
