@@ -17,9 +17,13 @@ tool to experiment with distributed ethnography.
 
 ## Setup
 
+The goal is everything in this repo can be accomplished via `make`.
+
+Note: This repo was written on MacOS, but any Unix-based OS should work. 
+
 ### Toolchain
 
-This repo was written on MacOS, but any Unix-based OS should work. You will need the following tools:
+To run this service, you will need the following programs on a Unix-based operating system:
 
 | Tool    | Notes                                                                                                 |
 |---------|-------------------------------------------------------------------------------------------------------|
