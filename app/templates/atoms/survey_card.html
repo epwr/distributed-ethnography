@@ -1,3 +1,10 @@
 <div hx-get="/survey/{{survey.uid}}" class="card">
-  {{ survey.name }}
+  <h3>
+	{{ survey.name }}
+  </h3>
+  <div class="button-row">
+	{{ render_partial("atoms/button.html", text="Answer", to="/surveys/" + survey.uid.__str__()) }}
+	{% if show_edit %}
+	{{ render_partial("atoms/button.html", text="Edit", to="/admin/surveys/" + survey.uid.__str__()) }}
+	{% endif %}
 </div>
