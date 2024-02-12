@@ -1,6 +1,7 @@
 import pytest
 from pathlib import Path
 
+from app.routes import app
 from app.config import settings
 from app.data_service.sqlite3 import Sqlite3Driver
 from app.models import Survey
@@ -36,6 +37,12 @@ def populated_db_driver(
     cursor.executescript(query)
 
     return empty_db_driver
+
+
+@pytest.fixture
+def app_client():
+    with app.test_client() as client:
+        yield client
 
 
 @pytest.fixture

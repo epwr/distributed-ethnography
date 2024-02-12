@@ -1,7 +1,6 @@
 import pytest
 from unittest.mock import MagicMock
 
-from app.routes import app
 from app.data_service import DataService
 from app.models import Survey
 
@@ -21,12 +20,6 @@ def mock_data_service_class(monkeypatch):
     yield data_service
 
     monkeypatch.undo()
-
-
-@pytest.fixture
-def app_client():
-    with app.test_client() as client:
-        yield client
 
 
 class TestGetHTMLEndpoints:
