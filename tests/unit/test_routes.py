@@ -40,7 +40,8 @@ class TestGetHTMLEndpoints:
     def test_get_requests_provide_an_html_page(
         self,
         app_client,
-        endpoint,
+        mock_data_service_class,
+        endpoint: str,
     ):
         response = app_client.get(endpoint)
         assert_response_is_valid_html(response)
@@ -52,7 +53,8 @@ class TestGetHTMLEndpoints:
     def test_get_request_returns_404(
         self,
         app_client,
-        endpoint,
+        mock_data_service_class,
+        endpoint: str,
     ):
         response = app_client.get(endpoint)
         assert response.status_code == 404
