@@ -56,6 +56,7 @@ class TestGetHTMLEndpoints:
         mock_data_service_class,
         endpoint: str,
     ):
+        mock_data_service_class.return_value.get_survey_if_open.return_value = None
         response = app_client.get(endpoint)
         assert response.status_code == 404
 
