@@ -1,5 +1,7 @@
 # distributed-ethnography
 
+[![Continuous Integration](https://github.com/epwr/distributed-ethnography/actions/workflows/Continuous%20Integration.yml/badge.svg)](https://github.com/epwr/distributed-ethnography/actions/workflows/Continuous%20Integration.yml)
+
 Distributed ethnography is a method of understanding a "community’s belief systems through their own narratives" (K Mausch, 2018). It tackles the idea 
 that it's very difficult to use technology to understand what someone means by having the storyteller quickly explain the meaning of their story across
 a set of dimensions. These dimensions can then be used as metadata. Technology can then use this metadata to aggregate and slice stories from hundreds 
