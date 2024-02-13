@@ -1,9 +1,9 @@
 # distributed-ethnography
 
-Distributed ethnography is a method of understanding a "community’s belief systems through their own narratives" (K Mausch, 2018). It takes the idea 
-that it's very difficult to use technology to understand what someone means, and has the storyteller quickly explain the meaning of their story which 
-can be used as metadata. Technology can then use this metadata to aggregate and slice stories from hundreds or thousands of storytellers, and provide
-the end consumer of this information a way of understanding trends and then diving into the individual stories.
+Distributed ethnography is a method of understanding a "community’s belief systems through their own narratives" (K Mausch, 2018). It tackles the idea 
+that it's very difficult to use technology to understand what someone means by having the storyteller quickly explain the meaning of their story across
+a set of dimensions. These dimensions can then be used as metadata. Technology can then use this metadata to aggregate and slice stories from hundreds 
+or thousands of storytellers, and provide the end consumer of this information a way of understanding trends and then diving into the individual stories.
 
 I first came across distributed ethnography through a speech given by Dave Snowden (D Snowden, 2016). In that speech, Dave makes a very strong case
 for the weaknesses in traditional survey-based, and presented his approach of having survey respondents tell a story and then rank the meaning over 
