@@ -4,6 +4,6 @@ from pydantic import Field
 from .base_data_model import BaseDataModel
 
 
-class Question(BaseDataModel):
+class TextQuestion(BaseDataModel):
     uid: UUID = Field(default_factory=uuid4)
     question: str

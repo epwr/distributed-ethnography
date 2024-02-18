@@ -1,4 +1,4 @@
-__all__ = ["Survey", "Question"]
+__all__ = ["Survey", "TextQuestion"]
 
 from .survey import Survey
-from .question import Question
+from .text_question import TextQuestion

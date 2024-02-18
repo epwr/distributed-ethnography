@@ -1,6 +1,6 @@
 import pytest
 
-from app.models import Survey, Question
+from app.models import Survey, TextQuestion
 
 
 @pytest.mark.parametrize(
@@ -15,9 +15,9 @@ from app.models import Survey, Question
             },
         ],
         [Survey, {"is_open": True, "name": "Test Survey"}],  # .uid should be optional
-        [Question, {"question": "How are you today?"}],  # .uid should be optional
+        [TextQuestion, {"question": "How are you today?"}],  # .uid should be optional
         [
-            Question,
+            TextQuestion,
             {
                 "uid": "bb92a5f5-7d62-4e77-9cbb-c8c903c4e65f",
                 "question": "How are you today?",
@@ -52,17 +52,21 @@ def test_all_models_enforce_type_hints(model_class, arguments):
             True,
         ),
         (
-            Question(question="What is?"),
-            Question(question="What is?"),
+            TextQuestion(question="What is?"),
+            TextQuestion(question="What is?"),
             False,
         ),  # UIDs should be different
         (
-            Question(question="What is?", uid="aa11a5f5-7d42-4e77-9cbb-c8c903c4e65f"),
-            Question(question="What is?", uid="aa11a5f5-7d42-4e77-9cbb-c8c903c4e65f"),
+            TextQuestion(
+                question="What is?", uid="aa11a5f5-7d42-4e77-9cbb-c8c903c4e65f"
+            ),
+            TextQuestion(
+                question="What is?", uid="aa11a5f5-7d42-4e77-9cbb-c8c903c4e65f"
+            ),
             True,
         ),
         (
-            Question(
+            TextQuestion(
                 uid="aa11a5f5-7d42-4e77-9cbb-c8c903c4e65f",
                 question="What is?",
             ),
