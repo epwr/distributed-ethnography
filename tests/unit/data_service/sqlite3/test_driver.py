@@ -62,6 +62,9 @@ def test_sqlite3_driver_throws_error_if_adding_a_survey_that_already_exists(
         populated_db_driver.insert_survey(survey)
 
 
+3
+
+
 def test_sqlite3_driver_can_query_an_added_survey(
     empty_db_driver,
     new_survey_open,
