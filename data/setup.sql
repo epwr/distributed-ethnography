@@ -8,16 +8,17 @@ CREATE TABLE IF NOT EXISTS survey (
 	   , name TEXT
 );
 
-CREATE TABLE IF NOT EXISTS question (
+CREATE TABLE IF NOT EXISTS text_question (
 	   uid TEXT PRIMARY KEY
 	   , survey_uid TEXT
 	   , question TEXT
 	   , FOREIGN KEY(survey_uid) REFERENCES survey(uid)
 );
 
-CREATE TABLE IF NOT EXISTS ranking (
+CREATE TABLE IF NOT EXISTS ranking_question (
 	   uid TEXT PRIMARY KEY
 	   , question_uid TEXT
+	   , question TEXT
 	   , first_dimension TEXT
 	   , second_dimension TEXT
 	   , third_dimension TEXT
