@@ -38,6 +38,11 @@ INSERT INTO text_question (
   "11111111-b37a-32b3-19d9-72ec921021e3"
   , "00000000-b37a-32b3-19d9-72ec921021e3"
   , "What story?"
+),
+(
+  "11111111-b37a-44a1-19d9-72ec921021e3"
+  , "00000000-b37a-32b3-19d9-72ec921021e3"
+  , "What story?"
 );
 
 COMMIT;

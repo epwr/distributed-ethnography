@@ -5,7 +5,7 @@ from contextlib import contextmanager
 from uuid import UUID
 
 from .model_factory import fetch_query_results_as_model
-from app.models import Survey
+from app.models import Survey, TextQuestion
 
 
 class Sqlite3Driver:
@@ -46,3 +46,23 @@ class Sqlite3Driver:
 
         with self._get_cursor() as cursor:
             cursor.execute(query, (str(survey.uid), survey.name, survey.is_open))
+
+    def get_text_question(self, uid: UUID) -> TextQuestion | None:
+        query = "SELECT * FROM text_question WHERE uid = ? LIMIT 1;"
+
+        with self._get_cursor() as cursor:
+            cursor.execute(query, (str(uid),))
+            result = fetch_query_results_as_model(cursor, TextQuestion)
+
+        if len(result) > 0:
+            return result[0]
+        return None
+
+    def get_text_questions_from_survey(self, survey_uid: UUID) -> list[TextQuestion]:
+        query = "SELECT * FROM text_question WHERE survey_uid = ?;"
+
+        with self._get_cursor() as cursor:
+            cursor.execute(query, (str(survey_uid),))
+            results = fetch_query_results_as_model(cursor, TextQuestion)
+
+        return results

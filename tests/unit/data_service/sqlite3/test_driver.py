@@ -2,7 +2,8 @@ import sqlite3
 import pytest
 from uuid import UUID
 
-from app.models import Survey
+from app.models import Survey, TextQuestion
+from app.data_service.sqlite3 import Sqlite3Driver
 
 
 class TestDriver:
@@ -29,8 +30,8 @@ class TestDriverSurveyMethods:
     @pytest.mark.parametrize(
         "survey_uid",
         (
-            "00000000-9c88-4b81-9de4-bac7444fbb0a",
-            "00000000-a087-4fb6-a123-24ff30263530",
+            UUID("00000000-9c88-4b81-9de4-bac7444fbb0a"),
+            UUID("00000000-a087-4fb6-a123-24ff30263530"),
         ),
     )
     def test_driver_get_survey_returns_appropriate_survey(
@@ -38,19 +39,19 @@ class TestDriverSurveyMethods:
     ):
         survey = populated_db_driver.get_survey(survey_uid=survey_uid)
         assert survey is not None
-        assert survey.uid == UUID(survey_uid)
+        assert survey.uid == survey_uid
 
     @pytest.mark.parametrize(
         "survey_uid",
         (
-            "99999999-9c88-4b81-9de4-bac7444fbb0a",
-            "99999999-a087-4fb6-a123-24ff30263530",
+            UUID("99999999-9c88-4b81-9de4-bac7444fbb0a"),
+            UUID("99999999-a087-4fb6-a123-24ff30263530"),
         ),
     )
     def test_driver_get_survey_returns_none_when_no_survey_found(
         self, populated_db_driver, survey_uid
     ):
-        survey = populated_db_driver.get_survey(survey_uid=UUID(survey_uid))
+        survey = populated_db_driver.get_survey(survey_uid=survey_uid)
         assert survey is None
 
     def test_sqlite3_driver_throws_error_if_adding_a_survey_that_already_exists(
@@ -77,4 +78,57 @@ class TestDriverSurveyMethods:
 
 
 class TestDriverQuestionMethods:
-    pass
+    @pytest.mark.parametrize(
+        "text_question_uid",
+        (
+            UUID("11111111-9c88-4b81-9de4-bac7444fbb0a"),
+            UUID("11111111-a087-4fb6-a123-24ff30263530"),
+            UUID("11111111-b37a-32b3-19d9-72ec921021e3"),
+        ),
+    )
+    def test_driver_query_a_question(
+        self, populated_db_driver: Sqlite3Driver, text_question_uid: UUID
+    ):
+        question = populated_db_driver.get_text_question(uid=text_question_uid)
+
+        assert isinstance(question, TextQuestion)
+        assert question.uid == text_question_uid
+
+    @pytest.mark.parametrize(
+        "survey_uid, expected_tq_uids",
+        (
+            (
+                UUID("00000000-9c88-4b81-9de4-bac7444fbb0a"),
+                {UUID("11111111-9c88-4b81-9de4-bac7444fbb0a")},
+            ),
+            (
+                UUID("00000000-a087-4fb6-a123-24ff30263530"),
+                {UUID("11111111-a087-4fb6-a123-24ff30263530")},
+            ),
+            (
+                UUID("00000000-b37a-32b3-19d9-72ec921021e3"),
+                {
+                    UUID("11111111-b37a-44a1-19d9-72ec921021e3"),
+                    UUID("11111111-b37a-32b3-19d9-72ec921021e3"),
+                },
+            ),
+            (
+                UUID("99999999-a087-4fb6-a123-24ff30263530"),
+                {},
+            ),
+        ),
+    )
+    def test_driver_can_list_questions_related_to_a_survey_uid(
+        self,
+        populated_db_driver: Sqlite3Driver,
+        survey_uid: UUID,
+        expected_tq_uids: set[UUID],
+    ):
+        text_questions = populated_db_driver.get_text_questions_from_survey(
+            survey_uid=survey_uid
+        )
+
+        assert len(text_questions) == len(expected_tq_uids)
+        for tq in text_questions:
+            assert isinstance(tq, TextQuestion)
+            assert tq.uid in expected_tq_uids
