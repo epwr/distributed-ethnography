@@ -8,13 +8,10 @@ from app.models import Survey, TextQuestion
 
 
 @pytest.fixture
-def surveys() -> list[Survey]:
+def surveys(open_survey) -> list[Survey]:
+    open_survey.uid = UUID("74bce4cf-0875-471b-a7c4-f25c7ef42864")
     return [
-        Survey(
-            uid=UUID("74bce4cf-0875-471b-a7c4-f25c7ef42864"),
-            name="test survey",
-            is_open=True,
-        )
+        open_survey,
     ]
 
 
@@ -89,13 +86,9 @@ class TestDataServiceSurveyMethods:
         returned_survey = data_service.get_survey_if_open(survey_uid=survey.uid)
         assert returned_survey is None
 
-    def test_can_insert_a_survey(
-        self, data_service: DataService, new_survey_open: Survey
-    ):
-        data_service.insert_survey(new_survey_open)
-        data_service._driver.insert_survey.assert_called_once_with(
-            survey=new_survey_open
-        )
+    def test_can_insert_a_survey(self, data_service: DataService, open_survey: Survey):
+        data_service.insert_survey(open_survey)
+        data_service._driver.insert_survey.assert_called_once_with(survey=open_survey)
 
     def test_get_questions_from_survey(
         self,

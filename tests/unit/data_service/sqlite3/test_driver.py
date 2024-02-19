@@ -67,14 +67,14 @@ class TestDriverSurveyMethods:
     def test_sqlite3_driver_can_query_an_added_survey(
         self,
         empty_db_driver,
-        new_survey_open,
+        open_survey,
     ):
-        empty_db_driver.insert_survey(new_survey_open)
+        empty_db_driver.insert_survey(open_survey)
 
         surveys = empty_db_driver.get_open_surveys()
 
         assert len(surveys) == 1
-        assert surveys[0] == new_survey_open
+        assert surveys[0] == open_survey
 
 
 class TestDriverQuestionMethods:

@@ -1,10 +1,10 @@
 import pytest
 from pathlib import Path
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 from app.routes import app
 from app.data_service.sqlite3 import Sqlite3Driver
-from app.models import Survey
+from app.models import Survey, TextQuestion
 
 
 @pytest.fixture
@@ -47,9 +47,18 @@ def app_client():
 
 
 @pytest.fixture
-def new_survey_open():
-    # survey with a random UUID
+def open_survey() -> Survey:
     return Survey(
+        uid=UUID("f21ccd82-83d6-40bc-8e60-703382f73860"),
         name="Test Survey",
         is_open=True,
+    )
+
+
+@pytest.fixture
+def text_question() -> TextQuestion:
+    return TextQuestion(
+        uid=UUID("8c7d6885-0ebb-4870-a8e1-a4630497a089"),
+        survey_uid=UUID("f21ccd82-83d6-40bc-8e60-703382f73860"),
+        question="When is it time?",
     )

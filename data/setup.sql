@@ -17,7 +17,6 @@ CREATE TABLE IF NOT EXISTS text_question (
 
 CREATE TABLE IF NOT EXISTS ranking_question (
 	   uid TEXT PRIMARY KEY
-	   , question_uid TEXT
 	   , question TEXT
 	   , first_dimension TEXT
 	   , second_dimension TEXT
