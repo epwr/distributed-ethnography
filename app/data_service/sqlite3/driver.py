@@ -47,11 +47,11 @@ class Sqlite3Driver:
         with self._get_cursor() as cursor:
             cursor.execute(query, (str(survey.uid), survey.name, survey.is_open))
 
-    def get_text_question(self, uid: UUID) -> TextQuestion | None:
+    def get_text_question(self, question_uid: UUID) -> TextQuestion | None:
         query = "SELECT * FROM text_question WHERE uid = ? LIMIT 1;"
 
         with self._get_cursor() as cursor:
-            cursor.execute(query, (str(uid),))
+            cursor.execute(query, (str(question_uid),))
             result = fetch_query_results_as_model(cursor, TextQuestion)
 
         if len(result) > 0:

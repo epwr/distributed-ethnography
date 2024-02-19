@@ -51,10 +51,14 @@ def test_all_models_enforce_type_hints(model_class, arguments):
         (Survey(name="Test", is_open=True), Survey(name="Test", is_open=True), False),
         (
             Survey(
-                uid="bb92a5f5-7d62-4e77-9cbb-c8c903c4e65f", name="Test", is_open=True
+                uid="bb92a5f5-7d62-4e77-9cbb-c8c903c4e65f",
+                name="Test",
+                is_open=True,
             ),
             Survey(
-                uid="bb92a5f5-7d62-4e77-9cbb-c8c903c4e65f", name="Test", is_open=True
+                uid="bb92a5f5-7d62-4e77-9cbb-c8c903c4e65f",
+                name="Test",
+                is_open=True,
             ),
             True,
         ),
@@ -89,7 +93,9 @@ def test_all_models_enforce_type_hints(model_class, arguments):
                 survey_uid="63163031-ce99-46c3-a70b-c3df75a51258",
             ),
             Survey(
-                uid="63163031-ce99-46c3-a70b-c3df75a51258", name="Test", is_open=True
+                uid="63163031-ce99-46c3-a70b-c3df75a51258",
+                name="Test",
+                is_open=True,
             ),
             False,
         ),

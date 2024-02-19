@@ -89,7 +89,7 @@ class TestDriverQuestionMethods:
     def test_driver_query_a_question(
         self, populated_db_driver: Sqlite3Driver, text_question_uid: UUID
     ):
-        question = populated_db_driver.get_text_question(uid=text_question_uid)
+        question = populated_db_driver.get_text_question(question_uid=text_question_uid)
 
         assert isinstance(question, TextQuestion)
         assert question.uid == text_question_uid
