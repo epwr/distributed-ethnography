@@ -15,13 +15,4 @@ CREATE TABLE IF NOT EXISTS text_question (
 	   , FOREIGN KEY(survey_uid) REFERENCES survey(uid)
 );
 
-CREATE TABLE IF NOT EXISTS ranking_question (
-	   uid TEXT PRIMARY KEY
-	   , question TEXT
-	   , first_dimension TEXT
-	   , second_dimension TEXT
-	   , third_dimension TEXT
-	   , FOREIGN KEY(question_uid) REFERENCES question(uid)
-);
-
 COMMIT;
