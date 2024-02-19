@@ -15,12 +15,19 @@ from app.models import Survey, TextQuestion
             },
         ],
         [Survey, {"is_open": True, "name": "Test Survey"}],  # .uid should be optional
-        [TextQuestion, {"question": "How are you today?"}],  # .uid should be optional
+        [
+            TextQuestion,
+            {
+                "question": "How are you today?",
+                "survey_uid": "63163031-ce99-46c3-a70b-c3df75a51258",
+            },
+        ],  # .uid should be optional
         [
             TextQuestion,
             {
                 "uid": "bb92a5f5-7d62-4e77-9cbb-c8c903c4e65f",
                 "question": "How are you today?",
+                "survey_uid": "63163031-ce99-46c3-a70b-c3df75a51258",
             },
         ],  # type cast uid
     ],
@@ -52,16 +59,26 @@ def test_all_models_enforce_type_hints(model_class, arguments):
             True,
         ),
         (
-            TextQuestion(question="What is?"),
-            TextQuestion(question="What is?"),
+            TextQuestion(
+                question="What is?",
+                survey_uid="63163031-ce99-46c3-a70b-c3df75a51258",
+            ),
+            TextQuestion(
+                question="What is?",
+                survey_uid="63163031-ce99-46c3-a70b-c3df75a51258",
+            ),
             False,
         ),  # UIDs should be different
         (
             TextQuestion(
-                question="What is?", uid="aa11a5f5-7d42-4e77-9cbb-c8c903c4e65f"
+                question="What is?",
+                uid="aa11a5f5-7d42-4e77-9cbb-c8c903c4e65f",
+                survey_uid="63163031-ce99-46c3-a70b-c3df75a51258",
             ),
             TextQuestion(
-                question="What is?", uid="aa11a5f5-7d42-4e77-9cbb-c8c903c4e65f"
+                question="What is?",
+                uid="aa11a5f5-7d42-4e77-9cbb-c8c903c4e65f",
+                survey_uid="63163031-ce99-46c3-a70b-c3df75a51258",
             ),
             True,
         ),
@@ -69,9 +86,10 @@ def test_all_models_enforce_type_hints(model_class, arguments):
             TextQuestion(
                 uid="aa11a5f5-7d42-4e77-9cbb-c8c903c4e65f",
                 question="What is?",
+                survey_uid="63163031-ce99-46c3-a70b-c3df75a51258",
             ),
             Survey(
-                uid="aa11a5f5-7d42-4e77-9cbb-c8c903c4e65f", name="Test", is_open=True
+                uid="63163031-ce99-46c3-a70b-c3df75a51258", name="Test", is_open=True
             ),
             False,
         ),

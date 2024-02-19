@@ -4,15 +4,26 @@ from uuid import UUID
 
 from app.data_service import DataService
 from app.data_service.sqlite3 import Sqlite3Driver
-from app.models import Survey
+from app.models import Survey, TextQuestion
 
 
 @pytest.fixture
 def surveys() -> list[Survey]:
     return [
         Survey(
+            uid=UUID("74bce4cf-0875-471b-a7c4-f25c7ef42864"),
             name="test survey",
             is_open=True,
+        )
+    ]
+
+
+@pytest.fixture
+def questions() -> list[TextQuestion]:
+    return [
+        TextQuestion(
+            question="What's up?",
+            survey_uid=UUID("74bce4cf-0875-471b-a7c4-f25c7ef42864"),
         )
     ]
 
