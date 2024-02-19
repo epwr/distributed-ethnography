@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock
 
 from app.data_service import DataService
-from app.models import Survey
+from app.models import Survey, TextQuestion
 
 from tests.unit.test_routes_utils import (
     assert_response_is_valid_htmx,
@@ -13,9 +13,14 @@ from tests.unit.test_routes_utils import (
 
 
 @pytest.fixture
-def mock_data_service_class(monkeypatch):
+def mock_data_service(monkeypatch, open_survey: Survey, text_question: TextQuestion):
     data_service = MagicMock()
     monkeypatch.setattr("app.routes.DataService", data_service)
+
+    data_service.return_value.get_survey_if_open.return_value = open_survey
+    data_service.return_value.get_text_questions_from_survey.return_value = (
+        text_question
+    )
 
     yield data_service
 
@@ -40,7 +45,7 @@ class TestGetHTMLEndpoints:
     def test_get_requests_provide_an_html_page(
         self,
         app_client,
-        mock_data_service_class,
+        mock_data_service,
         endpoint: str,
     ):
         response = app_client.get(endpoint)
@@ -53,12 +58,37 @@ class TestGetHTMLEndpoints:
     def test_get_request_returns_404(
         self,
         app_client,
-        mock_data_service_class,
+        mock_data_service,
         endpoint: str,
     ):
-        mock_data_service_class.return_value.get_survey_if_open.return_value = None
+        mock_data_service.return_value.get_survey_if_open.return_value = None
         response = app_client.get(endpoint)
         assert response.status_code == 404
+
+    @pytest.mark.parametrize(
+        "slug, expected_data_service_calls",
+        (
+            (
+                "/surveys/00000000-a087-4fb6-a123-24ff30263530",
+                ("get_survey_if_open", "get_text_questions_from_survey"),
+            ),
+        ),
+    )
+    def test_get_requests_make_expected_data_service_calls(
+        self,
+        app_client,
+        mock_data_service,
+        slug: str,
+        expected_data_service_calls: str,
+    ):
+        response = app_client.get(slug)
+
+        for method in expected_data_service_calls:
+            assert_mocked_class_has_method_call_on_object(
+                mock_class=mock_data_service,
+                method_call=method,
+            )
+        assert_response_is_valid_html(response)
 
 
 class TestGetHTMXEndpoints:
@@ -71,44 +101,48 @@ class TestGetHTMXEndpoints:
     test_cases = (
         (
             "/surveys",
-            "get_open_surveys",
+            ("get_open_surveys",),
         ),
     )
 
     @pytest.mark.parametrize(
-        "slug, expected_data_service_call",
+        "slug, expected_data_service_calls",
         test_cases,
     )
     def test_get_requests_return_partial_html_if_htmx_headers_are_present(
         self,
         app_client,
-        mock_data_service_class,
+        mock_data_service,
         slug: str,
-        expected_data_service_call: str,
+        expected_data_service_calls: str,
     ):
         response = app_client.get(slug, headers={"Hx-Request": "true"})
-        assert_mocked_class_has_method_call_on_object(
-            mock_class=mock_data_service_class,
-            method_call=expected_data_service_call,
-        )
+
+        for method in expected_data_service_calls:
+            assert_mocked_class_has_method_call_on_object(
+                mock_class=mock_data_service,
+                method_call=method,
+            )
         assert_response_is_valid_htmx(response)
 
     @pytest.mark.parametrize(
-        "slug, expected_data_service_call",
+        "slug, expected_data_service_calls",
         test_cases,
     )
     def test_htmx_endpoints_returns_html_page_if_htmx_headers_are_not_present(
         self,
         app_client,
-        mock_data_service_class,
+        mock_data_service,
         slug: str,
-        expected_data_service_call: str,
+        expected_data_service_calls: str,
     ):
         response = app_client.get(slug)
-        assert_mocked_class_has_method_call_on_object(
-            mock_class=mock_data_service_class,
-            method_call=expected_data_service_call,
-        )
+
+        for method in expected_data_service_calls:
+            assert_mocked_class_has_method_call_on_object(
+                mock_class=mock_data_service,
+                method_call=method,
+            )
         assert_response_is_valid_html(response)
 
 
@@ -153,12 +187,12 @@ class TestPostHTMXFormEndpoints:
         data: dict[str, str],
         expected_data_service_call: str,
         argument_class: str,
-        mock_data_service_class: DataService,
+        mock_data_service: DataService,
     ):
         response = app_client.post(slug, data=data, headers={"Hx-Request": "true"})
 
         assert_mocked_class_has_method_call_on_object(
-            mock_class=mock_data_service_class,
+            mock_class=mock_data_service,
             method_call=expected_data_service_call,
             argument_types=[argument_class],
         )
@@ -175,12 +209,12 @@ class TestPostHTMXFormEndpoints:
         data: dict[str, str],
         expected_data_service_call: str,
         argument_class: str,
-        mock_data_service_class: DataService,
+        mock_data_service: DataService,
     ):
         response = app_client.post(slug, data=data)
 
         assert_mocked_class_has_method_call_on_object(
-            mock_class=mock_data_service_class,
+            mock_class=mock_data_service,
             method_call=expected_data_service_call,
             argument_types=[argument_class],
         )

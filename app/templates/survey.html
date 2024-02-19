@@ -1,8 +1,14 @@
 {% extends '_layout.html' %}
 
 {% block content %}
-<h3>{{survey.name}}</h3>
+<h1>{{survey.name}}</h3>
 
-Not Implemented
+<div>
+{% for question in questions %}
+<h2>{{question.question}}</h2>
+{% endfor %}
+<div>
+
+Answering Questions is not yet implemented.
 
 {% endblock %}

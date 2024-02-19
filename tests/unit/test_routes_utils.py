@@ -47,3 +47,5 @@ def assert_mocked_class_has_method_call_on_object(
         assert len(method.call_args.args) == len(argument_types)
         for arg, of_type in zip(method.call_args.args, argument_types):
             assert isinstance(arg, of_type)
+    else:
+        method.assert_called_once()
