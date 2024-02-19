@@ -86,13 +86,22 @@ class TestDriverQuestionMethods:
             UUID("11111111-b37a-32b3-19d9-72ec921021e3"),
         ),
     )
-    def test_driver_query_a_question(
+    def test_driver_get_test_question(
         self, populated_db_driver: Sqlite3Driver, text_question_uid: UUID
     ):
         question = populated_db_driver.get_text_question(question_uid=text_question_uid)
 
         assert isinstance(question, TextQuestion)
         assert question.uid == text_question_uid
+
+    def test_get_text_question_returns_none_if_no_question_with_uid_exists(
+        self, populated_db_driver: Sqlite3Driver
+    ):
+        question = populated_db_driver.get_text_question(
+            question_uid=UUID("209d67a3-d354-4cd8-afc4-7e6479582086")
+        )
+
+        assert question is None
 
     @pytest.mark.parametrize(
         "survey_uid, expected_tq_uids",
