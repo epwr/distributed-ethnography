@@ -42,7 +42,7 @@ class Sqlite3Driver:
         return None
 
     def insert_survey(self, survey: Survey) -> None:
-        query = "INSERT INTO survey (uid, name, is_open) VALUES (?, ?, ?)"
+        query = "INSERT INTO survey (uid, name, is_open) VALUES (?, ?, ?);"
 
         with self._get_cursor() as cursor:
             cursor.execute(query, (str(survey.uid), survey.name, survey.is_open))
@@ -66,3 +66,18 @@ class Sqlite3Driver:
             results = fetch_query_results_as_model(cursor, TextQuestion)
 
         return results
+
+    def insert_text_question(self, text_question: TextQuestion) -> None:
+        query = (
+            "INSERT INTO text_question (uid, survey_uid, question) VALUES (?, ?, ?);"
+        )
+
+        with self._get_cursor() as cursor:
+            cursor.execute(
+                query,
+                (
+                    str(text_question.uid),
+                    str(text_question.survey_uid),
+                    text_question.question,
+                ),
+            )

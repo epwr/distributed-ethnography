@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 from app.data_service import DataService
 from app.models import Survey, TextQuestion
 
-from tests.unit.test_routes_utils import (
+from tests.unit.test_routes_helpers import (
     assert_response_is_valid_htmx,
     assert_response_is_valid_html,
     assert_response_is_valid,
@@ -13,13 +13,15 @@ from tests.unit.test_routes_utils import (
 
 
 @pytest.fixture
-def mock_data_service(monkeypatch, open_survey: Survey, text_question: TextQuestion):
+def mock_data_service(
+    monkeypatch, new_open_survey: Survey, new_text_question: TextQuestion
+):
     data_service = MagicMock()
     monkeypatch.setattr("app.routes.DataService", data_service)
 
-    data_service.return_value.get_survey_if_open.return_value = open_survey
+    data_service.return_value.get_survey_if_open.return_value = new_open_survey
     data_service.return_value.get_text_questions_from_survey.return_value = (
-        text_question
+        new_text_question
     )
 
     yield data_service
@@ -158,67 +160,96 @@ class TestGetStaticFileEndpoints:
         assert_response_is_valid(response, mime_type=mime_type)
 
 
-class TestPostHTMXFormEndpoints:
+class TestCreateSurveyEndpoint:
     test_cases = (
         (
-            "/surveys/new",
-            {"name": "test survey - open", "is_open": True},
-            "insert_survey",
-            Survey,
+            {
+                "name": "test survey - open",
+                "is_open": True,
+                "question-0": "What's my name again?",
+                "question-1": "What's your name again?",
+            },
+            {
+                "insert_survey": {"survey": Survey},
+                "insert_text_question": {"text_question": TextQuestion},
+            },
         ),
         (
-            "/surveys/new",
             {
-                "name": "test survey - closed"
+                "name": "test survey - closed",
+                "question-0": "What's my name again?",
+                "question-1": "What's your name again?",
             },  # unchecked checkboxes are represented as missing.
-            "insert_survey",
-            Survey,
+            {
+                "insert_survey": {"survey": Survey},
+                "insert_text_question": {"text_question": TextQuestion},
+            },
+        ),
+        (
+            {
+                "name": "test survey - closed w/ no questions",
+            },  # unchecked checkboxes are represented as missing.
+            {
+                "insert_survey": {"survey": Survey},
+            },
+        ),
+        (
+            {
+                "name": "test survey - with questions",
+                "is_open": True,
+                "question-0": "How are you today?",
+                "question-1": "What day is it?",
+            },
+            {
+                "insert_survey": {"survey": Survey},
+                "insert_text_question": {"text_question": TextQuestion},
+            },
         ),
     )
 
     @pytest.mark.parametrize(
-        "slug, data, expected_data_service_call, argument_class",
+        "data, expected_data_service_calls",
         test_cases,
     )
     def test_post_requests_can_return_htmx(
         self,
         app_client,
-        slug: str,
-        data: dict[str, str],
-        expected_data_service_call: str,
-        argument_class: str,
         mock_data_service: DataService,
+        data: dict[str, str],
+        expected_data_service_calls: dict[str, list[Survey | TextQuestion]],
     ):
-        response = app_client.post(slug, data=data, headers={"Hx-Request": "true"})
-
-        assert_mocked_class_has_method_call_on_object(
-            mock_class=mock_data_service,
-            method_call=expected_data_service_call,
-            argument_types=[argument_class],
+        response = app_client.post(
+            "/surveys/new", data=data, headers={"Hx-Request": "true"}
         )
+
         assert_response_is_valid_htmx(response)
+        for method_call, argument_types in expected_data_service_calls.items():
+            assert_mocked_class_has_method_call_on_object(
+                mock_class=mock_data_service,
+                method_call=method_call,
+                arguments_of_types=argument_types,
+            )
 
     @pytest.mark.parametrize(
-        "slug, data, expected_data_service_call, argument_class",
+        "data, expected_data_service_calls",
         test_cases,
     )
     def test_post_requests_can_return_html(
         self,
         app_client,
-        slug: str,
-        data: dict[str, str],
-        expected_data_service_call: str,
-        argument_class: str,
         mock_data_service: DataService,
+        data: dict[str, str],
+        expected_data_service_calls: str,
     ):
-        response = app_client.post(slug, data=data)
+        response = app_client.post("/surveys/new", data=data)
 
-        assert_mocked_class_has_method_call_on_object(
-            mock_class=mock_data_service,
-            method_call=expected_data_service_call,
-            argument_types=[argument_class],
-        )
         assert_response_is_valid_html(response)
+        for method_call, argument_types in expected_data_service_calls.items():
+            assert_mocked_class_has_method_call_on_object(
+                mock_class=mock_data_service,
+                method_call=method_call,
+                arguments_of_types=argument_types,
+            )
 
     @pytest.mark.parametrize(
         "slug, data",
@@ -226,10 +257,48 @@ class TestPostHTMXFormEndpoints:
             ("/surveys/new", {}),
             (
                 "/surveys/new",
-                {"name": "Testing", "uid": "bb92a5f5-7d62-4e77-9cbb-c8c903c4e65f"},
+                {
+                    "name": "Do not pass uid field in via api.",
+                    "uid": "bb92a5f5-7d62-4e77-9cbb-c8c903c4e65f",
+                },
+            ),
+            (
+                "/surveys/new",
+                {
+                    "name": "Malformed questions.",
+                    "is_open": True,
+                    "questions": "questions should have a name of question-X",
+                },
+            ),
+            (
+                "/surveys/new",
+                {
+                    "name": "Malformed questions.",
+                    "is_open": True,
+                    "question-1": "key should be question-X, starting at x=0",
+                },
+            ),
+            (
+                "/surveys/new",
+                {
+                    "name": "Malformed questions.",
+                    "is_open": True,
+                    "question-0": "key should be question-X, starting at x=0",
+                    "question-2": "questions should have an incrementing index.",
+                },
+            ),
+            (
+                "/surveys/new",
+                {},
+            ),
+            (
+                "/surveys/new",
+                [],
             ),
         ),
     )
-    def test_malformed_requests_return_400_code(self, app_client, slug, data) -> None:
+    def test_malformed_requests_return_400_code(
+        self, app_client, mock_data_service: DataService, slug: str, data: dict
+    ) -> None:
         response = app_client.post(slug, data=data)
         assert response.status_code == 400

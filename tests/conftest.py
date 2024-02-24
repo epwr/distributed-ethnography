@@ -47,7 +47,7 @@ def app_client():
 
 
 @pytest.fixture
-def open_survey() -> Survey:
+def new_open_survey() -> Survey:
     return Survey(
         uid=UUID("f21ccd82-83d6-40bc-8e60-703382f73860"),
         name="Test Survey",
@@ -56,9 +56,18 @@ def open_survey() -> Survey:
 
 
 @pytest.fixture
-def text_question() -> TextQuestion:
+def existing_open_survey() -> Survey:
+    return Survey(
+        uid=UUID("00000000-a087-4fb6-a123-24ff30263530"),
+        name="Open Test Survey - 1Q",
+        is_open=True,
+    )
+
+
+@pytest.fixture
+def new_text_question() -> TextQuestion:
     return TextQuestion(
-        uid=UUID("8c7d6885-0ebb-4870-a8e1-a4630497a089"),
+        uid=UUID("fd3d76f5-96a0-42a6-92d6-cbc55ef1d79f"),
         survey_uid=UUID("f21ccd82-83d6-40bc-8e60-703382f73860"),
         question="When is it time?",
     )

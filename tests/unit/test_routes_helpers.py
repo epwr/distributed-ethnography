@@ -24,7 +24,7 @@ def assert_mocked_class_has_method_call_on_object(
     mock_class: type,
     method_call: str,
     arguments: dict | None = None,
-    argument_types: list[type] | None = None,
+    arguments_of_types: dict[str, type] | None = None,
 ) -> None:
     """
     Assert that a mocked class was instantiated and then a method was called on
@@ -33,19 +33,20 @@ def assert_mocked_class_has_method_call_on_object(
     If arguments is passed, then assert that the method was called once with the
     provided arguments.
 
-    Else-if argument_types is passed, assert that the method was called with a set
-    of arguments where each argument has the appropriate types.
+    Else-if argument_of_types is passed, assert that the method was called with a set
+    of arguments where each argument has the appropriate type.
 
     Otherwise, assert that the method was called once.
     """
 
     method = mock_class.return_value.__getattr__(method_call)
+    assert method.called
+    assert len(method.call_args.args) == 0  # Use kwargs
 
     if arguments is not None:
         method.assert_called_once_with(**arguments)
-    elif argument_types is not None:
-        assert len(method.call_args.args) == len(argument_types)
-        for arg, of_type in zip(method.call_args.args, argument_types):
-            assert isinstance(arg, of_type)
-    else:
-        method.assert_called_once()
+    elif arguments_of_types is not None:
+        assert len(method.call_args.kwargs) == len(arguments_of_types)
+        for argument, arg_type in arguments_of_types.items():
+            value = method.call_args.kwargs[argument]
+            assert isinstance(value, arg_type)

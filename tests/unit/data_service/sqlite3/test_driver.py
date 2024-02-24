@@ -67,14 +67,14 @@ class TestDriverSurveyMethods:
     def test_sqlite3_driver_can_query_an_added_survey(
         self,
         empty_db_driver,
-        open_survey,
+        new_open_survey,
     ):
-        empty_db_driver.insert_survey(open_survey)
+        empty_db_driver.insert_survey(new_open_survey)
 
         surveys = empty_db_driver.get_open_surveys()
 
         assert len(surveys) == 1
-        assert surveys[0] == open_survey
+        assert surveys[0] == new_open_survey
 
 
 class TestDriverQuestionMethods:
@@ -141,3 +141,34 @@ class TestDriverQuestionMethods:
         for tq in text_questions:
             assert isinstance(tq, TextQuestion)
             assert tq.uid in expected_tq_uids
+
+    def test_insert_text_question(self, populated_db_driver: Sqlite3Driver):
+        question_uid = UUID("9ab25fd1-4c26-47ec-ad67-039ada5c0c7c")
+        survey_uid = UUID("00000000-9c88-4b81-9de4-bac7444fbb0a")
+        question_text = "What's up?"
+
+        text_question = TextQuestion(
+            uid=question_uid, survey_uid=survey_uid, question=question_text
+        )
+
+        populated_db_driver.insert_text_question(text_question)
+
+        returned_question = populated_db_driver.get_text_question(
+            question_uid=question_uid
+        )
+
+        assert text_question == returned_question
+
+    def test_insert_text_question_fails_do_to_survey_foreign_key(
+        self, populated_db_driver: Sqlite3Driver
+    ):
+        question_uid = UUID("9ab25fd1-4c26-47ec-ad67-039ada5c0c7c")
+        survey_uid = UUID("022a0def-4417-4d49-9bd2-418604eb9f25")
+        question_text = "What's up?"
+
+        text_question = TextQuestion(
+            uid=question_uid, survey_uid=survey_uid, question=question_text
+        )
+
+        with pytest.raises(sqlite3.IntegrityError):
+            populated_db_driver.insert_text_question(text_question)

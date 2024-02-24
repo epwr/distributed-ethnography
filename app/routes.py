@@ -5,15 +5,17 @@ from uuid import UUID
 from flask import Flask, render_template, request, abort
 import jinja_partials  # type: ignore
 
-from .flask_utils import htmx_endpoint
+from .utils import htmx_endpoint, validate_survey_data
 from .data_service import DataService, Sqlite3Driver
 from .config import settings
-from app.models import Survey
+from app.models import Survey, TextQuestion
 
 logging.info(f"Running with settings: {settings}")
 
 app = Flask(__name__)
 jinja_partials.register_extensions(app)
+
+# TODO: test that every endpoint logs the request.
 
 
 @app.before_request
@@ -64,20 +66,40 @@ def get_create_survey_page() -> str:
 @htmx_endpoint(template="molecules/survey_submitted.html")
 def create_survey() -> dict[str, Any]:
     data: dict[str, Any] = request.form
+    questions = []
 
-    try:
-        for key in data.keys():
-            if key not in ("name", "is_open"):
-                raise KeyError(f"Received unexpected key '{key}'")
-        new_survey = Survey(
-            name=data["name"],
-            is_open=data.get("is_open", False),
+    logging.info(f"/surveys/new request with data {data}")
+    print(f"data: {data}")
+
+    error = validate_survey_data(data)
+    if error is not None:
+        logging.error(f"/surveys/new with {data} could not be validated: {error}")
+        abort(400, error)
+
+    new_survey = Survey(
+        name=data["name"],
+        is_open=data.get(
+            "is_open", False
+        ),  # False is represented as missing in form data
+    )
+
+    questions = [
+        (key, value) for key, value in data.items() if key.startswith("question-")
+    ]
+    questions.sort(key=lambda q: q[0])
+    parsed_questions = []
+
+    for index, (question_key, question) in enumerate(questions):
+        parsed_questions.append(
+            TextQuestion(
+                survey_uid=new_survey.uid,
+                question=question,
+            )
         )
-    except KeyError:
-        logging.error(f"/surveys/new received a submission of the following: {data}")
-        abort(400, 'Survey submission should contain "name" and "is_open" fields.')
 
     data_service: DataService = app.data_service  # type: ignore[attr-defined]
-    data_service.insert_survey(new_survey)
+    data_service.insert_survey(survey=new_survey)
+    for question in parsed_questions:
+        data_service.insert_text_question(text_question=question)
 
     return {"survey_uid": str(new_survey.uid)}

@@ -21,7 +21,28 @@ def setup_data_service(monkeypatch, populated_db_driver):
 
 class TestMutationEndpoints:
     test_cases = [
-        ("post", "/surveys/new", {"name": "test", "is_open": True}, "/surveys"),
+        (
+            "post",
+            "/surveys/new",
+            {
+                "name": "test mutable endpoints 1",
+                "is_open": True,
+                "questions": [],
+            },
+            "/surveys",
+        ),
+        (
+            "post",
+            "/surveys/new",
+            {
+                "name": "test mutable endpoints 2",
+                "is_open": True,
+                "question-0": "What's my name again?",
+                "question-1": "What's you name again?",
+                "question-2": "Why are we here again?",
+            },
+            "/surveys",
+        ),
     ]
 
     @pytest.mark.parametrize("http_method, slug, data, read_endpoint", test_cases)
@@ -47,7 +68,12 @@ class TestMutationEndpoints:
 
 class TestDataPersistency:
     test_cases = [
-        ("post", "/surveys/new", {"name": "test", "is_open": True}, "/surveys"),
+        (
+            "post",
+            "/surveys/new",
+            {"name": "test", "is_open": True, "question-0": "Hello there!"},
+            "/surveys",
+        ),
     ]
 
     @staticmethod
