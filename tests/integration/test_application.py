@@ -26,7 +26,7 @@ class TestMutationEndpoints:
             "/surveys/new",
             {
                 "name": "test mutable endpoints 1",
-                "is_open": True,
+                "is_open": "on",
                 "questions": [],
             },
             "/surveys",
@@ -36,7 +36,7 @@ class TestMutationEndpoints:
             "/surveys/new",
             {
                 "name": "test mutable endpoints 2",
-                "is_open": True,
+                "is_open": "on",
                 "question-0": "What's my name again?",
                 "question-1": "What's you name again?",
                 "question-2": "Why are we here again?",
@@ -71,7 +71,7 @@ class TestDataPersistency:
         (
             "post",
             "/surveys/new",
-            {"name": "test", "is_open": True, "question-0": "Hello there!"},
+            {"name": "test", "is_open": "on", "question-0": "Hello there!"},
             "/surveys",
         ),
     ]
@@ -83,7 +83,7 @@ class TestDataPersistency:
     @staticmethod
     def create_survey_in_database(database_file: Path) -> None:
         data_service = TestDataPersistency.create_new_data_service(database_file)
-        survey = Survey(name="Test Survey", is_open=True)
+        survey = Survey(name="Test Survey", is_open="on")
         data_service.insert_survey(survey)
 
     def test_different_data_services_interact_with_the_same_database(

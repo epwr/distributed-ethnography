@@ -165,7 +165,7 @@ class TestCreateSurveyEndpoint:
         (
             {
                 "name": "test survey - open",
-                "is_open": True,
+                "is_open": "on",
                 "question-0": "What's my name again?",
                 "question-1": "What's your name again?",
             },
@@ -196,7 +196,7 @@ class TestCreateSurveyEndpoint:
         (
             {
                 "name": "test survey - with questions",
-                "is_open": True,
+                "is_open": "on",
                 "question-0": "How are you today?",
                 "question-1": "What day is it?",
             },
@@ -266,7 +266,7 @@ class TestCreateSurveyEndpoint:
                 "/surveys/new",
                 {
                     "name": "Malformed questions.",
-                    "is_open": True,
+                    "is_open": "on",
                     "questions": "questions should have a name of question-X",
                 },
             ),
@@ -274,7 +274,7 @@ class TestCreateSurveyEndpoint:
                 "/surveys/new",
                 {
                     "name": "Malformed questions.",
-                    "is_open": True,
+                    "is_open": "on",
                     "question-1": "key should be question-X, starting at x=0",
                 },
             ),
@@ -282,7 +282,7 @@ class TestCreateSurveyEndpoint:
                 "/surveys/new",
                 {
                     "name": "Malformed questions.",
-                    "is_open": True,
+                    "is_open": "on",
                     "question-0": "key should be question-X, starting at x=0",
                     "question-2": "questions should have an incrementing index.",
                 },

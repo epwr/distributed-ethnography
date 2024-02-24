@@ -3,16 +3,47 @@
 {% block content %}
 <h3>New Survey</h3>
 
-<form hx-post="/surveys/new" hx-swap="true">
+<script>
+  var nextQuestionIndex = 1;
+  const addQuestion = () => {
+    // Create a new div element
+    var newQuestionDiv = document.createElement('div');
+
+    // Set the HTML content for the new div
+    newQuestionDiv.innerHTML = `
+      <label>Question #${nextQuestionIndex + 1}:</label>
+      <input type="text" name="question-${nextQuestionIndex}">
+    `;
+
+    // Get the form element by its ID
+    var form = document.getElementById('survey-creation-form');
+
+    // Insert the new div as the second-to-last element in the form
+    // (before the last submit button)
+    form.insertBefore(newQuestionDiv, form.lastElementChild);
+    
+    // Increment the next question index
+    nextQuestionIndex++;
+  }
+</script>
+
+<form hx-post="/surveys/new" hx-swap="true" id='survey-creation-form'>
   <div>
-    <label>Survey Title</label>
-    <input name="name">
+    <label>Survey Title:</label>
+    <input type="text" name="name">
   </div>
-  <div>
-    <label>Publish?</label>
+  <div class="flex-row">
+    <label>Publish:</label>
     <input type="checkbox" name="is_open">
   </div>
-  <button class="button">Submit</button>
+  <div>
+    <label>Question #1:</label>
+    <input type="text" name="question-0">
+  </div>
+  <div class="button-row">
+	<button class="button" type="submit">Submit</button>
+	<button class="button" type="button" onclick="addQuestion()">Add Question</button>
+  </div>
 </form>
 
 {% endblock %}

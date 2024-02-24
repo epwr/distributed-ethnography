@@ -9,7 +9,7 @@ from app.utils import validate_survey_data
     (
         {
             "name": "Survey Name",
-            "is_open": "True",
+            "is_open": "on",
             "question-0": "What's my name again?",
         },
         {
@@ -36,7 +36,7 @@ def test_validate_survey_data_returns_no_errors_on_correct_data(data: Any):
         "Should be a dict",
         {
             "name": "Survey Name",
-            "is_open": "True",
+            "is_open": "on",
             "question-1": "What's my name again?",  # questions should be 0 indexed.
         },
         {
@@ -46,13 +46,13 @@ def test_validate_survey_data_returns_no_errors_on_correct_data(data: Any):
         },
         {
             "name": "Survey Name",
-            "is_open": "True",
+            "is_open": "on",
             "question-0": "What's my name again?",
             "question-3": "What's my name again?",
         },  # question should have incrementing indices
         {
             "name": [],  # Name should be a string
-            "is_open": "True",
+            "is_open": "on",
             "question-0": "What's my name again?",
         },
         {

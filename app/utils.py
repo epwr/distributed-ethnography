@@ -66,8 +66,8 @@ def validate_survey_data(data: Any) -> str | None:
     if not isinstance(data.get("is_open", ""), str):
         return f"'is_open' field was {type(data.get('is_open'))}, expected str or None."
 
-    if not (data.get("is_open") is None or data.get("is_open", "").lower() == "true"):
-        return f"'is_open' field was {data.get('is_open')}, expected 'true' or missing."
+    if not (data.get("is_open") is None or data.get("is_open", "").lower() == "on"):
+        return f"'is_open' field was {data.get('is_open')}, expected 'on' or missing."
 
     if not isinstance(data.get("name"), str):
         return f"'name' field was a {type(data['name'])}, expected string."
