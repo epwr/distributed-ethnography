@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from .sqlite3 import Sqlite3Driver
-from app.models import Survey, TextQuestion
+from app.models import Survey, TextQuestion, DimensionalQuestion
 
 
 class DataService:
@@ -31,3 +31,13 @@ class DataService:
 
     def insert_text_question(self, text_question: TextQuestion) -> None:
         self._driver.insert_text_question(text_question=text_question)
+
+    def get_dimensional_question(
+        self, question_uid: UUID
+    ) -> DimensionalQuestion | None:
+        return self._driver.get_dimensional_question(question_uid=question_uid)
+
+    def get_dimensional_questions_from_survey(
+        self, survey_uid: UUID
+    ) -> list[DimensionalQuestion]:
+        return self._driver.get_dimensional_questions_from_survey(survey_uid=survey_uid)
