@@ -18,6 +18,21 @@ INSERT INTO survey (
   "00000000-b37a-32b3-19d9-72ec921021e3"
   , true
   , "Open Test Survey - 2Qs"
+),
+(
+  "00000000-0762-4fd1-b927-65ddb494e04f"
+  , true
+  , "Open Test Survey - 1DQ"
+),
+(
+  "00000000-e253-4c39-b32b-eeb4f8e8711d"
+  , true
+  , "Open Test Survey - 2DQ"
+),
+(
+  "00000000-1f7c-43e9-ab61-3c34fd59a333"
+  , true
+  , "Open Test Survey - Mixed Questions"
 );
 
 INSERT INTO text_question (
@@ -43,6 +58,67 @@ INSERT INTO text_question (
   "11111111-b37a-44a1-19d9-72ec921021e3"
   , "00000000-b37a-32b3-19d9-72ec921021e3"
   , "What story?"
+),
+(
+  "11111111-8713-4275-9f43-4d127671f0ff"
+  , "00000000-1f7c-43e9-ab61-3c34fd59a333"
+  , "What story would you tell your grandchild about working in the military?"
 );
+
+INSERT INTO dimensional_question (
+	   uid
+	   , survey_uid
+	   , question
+	   , dimension_one
+	   , dimension_two
+	   , dimension_three
+) VALUES (
+  "11111111-3e01-4b2c-b396-1b20facf99c2"
+  , "00000000-9c88-4b81-9de4-bac7444fbb0a"
+  , "How would you describe your manager on the following dimensions?"
+  , "Empathetic"
+  , "Motivational"
+  , "Knowledgable"
+),
+(
+  "11111111-2b47-4d02-8c48-0fa65f0da016"
+  , "00000000-0762-4fd1-b927-65ddb494e04f"
+  , "What came across in your last interaction with the CEO?"
+  , "Purpose"
+  , "Audacity"
+  , "Clarity of Direction"
+),
+(
+  "11111111-041a-490d-a60c-82babc856120"
+  , "00000000-e253-4c39-b32b-eeb4f8e8711d"
+  , "How would you describe your manager on the following dimensions?"
+  , "Empathetic"
+  , "Motivational"
+  , "Knowledgable"
+),
+(
+  "11111111-b36f-4e80-aba4-9707a10d6acf"
+  , "00000000-e253-4c39-b32b-eeb4f8e8711d"
+  , "What came across in your last interaction with the CEO?"
+  , "Purpose"
+  , "Audacity"
+  , "Clarity of Direction"
+),
+(
+  "11111111-0fcc-484b-bab4-c33309cebd3c"
+  , "00000000-1f7c-43e9-ab61-3c34fd59a333"
+  , "How strongly does this story demonstrate the following values?"
+  , "Empathy to Colleagues"
+  , "Service to Others"
+  , "Individual Growth"
+),
+(
+  "11111111-b54a-45ee-86af-05f625f3d239"
+  , "00000000-1f7c-43e9-ab61-3c34fd59a333"
+  , "How strongly does this story demonstrate the following values?"
+  , "Accountability"
+  , "Efficiency"
+  , "Individual Growth"
+);;
 
 COMMIT;

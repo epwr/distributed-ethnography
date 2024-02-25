@@ -72,7 +72,11 @@ class TestGetHTMLEndpoints:
         (
             (
                 "/surveys/00000000-a087-4fb6-a123-24ff30263530",
-                ("get_survey_if_open", "get_text_questions_from_survey"),
+                (
+                    "get_survey_if_open",
+                    "get_text_questions_from_survey",
+                    "get_dimensional_questions_from_survey",
+                ),
             ),
         ),
     )

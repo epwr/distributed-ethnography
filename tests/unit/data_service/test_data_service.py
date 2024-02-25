@@ -4,37 +4,59 @@ from uuid import UUID
 
 from app.data_service import DataService
 from app.data_service.sqlite3 import Sqlite3Driver
-from app.models import Survey, TextQuestion
+from app.models import Survey, TextQuestion, DimensionalQuestion
 
 
 @pytest.fixture
 def surveys(new_open_survey) -> list[Survey]:
-    new_open_survey.uid = UUID("74bce4cf-0875-471b-a7c4-f25c7ef42864")
     return [
         new_open_survey,
     ]
 
 
 @pytest.fixture
-def questions() -> list[TextQuestion]:
+def text_questions(new_open_survey) -> list[TextQuestion]:
     return [
         TextQuestion(
             question="What's up?",
-            survey_uid=UUID("74bce4cf-0875-471b-a7c4-f25c7ef42864"),
+            survey_uid=new_open_survey.uid,
         )
     ]
 
 
 @pytest.fixture
-def data_service(surveys, questions) -> DataService:
+def dimensional_questions(new_open_survey) -> list[DimensionalQuestion]:
+    return [
+        DimensionalQuestion(
+            question="How would you rank?",
+            dimension_one="Dim 1",
+            dimension_two="Dim 2",
+            dimension_three="Dim 3",
+            survey_uid=new_open_survey.uid,
+        )
+    ]
+
+
+@pytest.fixture
+def data_service(
+    surveys: list[Survey],
+    text_questions: list[TextQuestion],
+    dimensional_questions: list[DimensionalQuestion],
+) -> DataService:
     mock_driver = Mock(spec=Sqlite3Driver)
 
     mock_driver.get_open_surveys.return_value = surveys
     mock_driver.insert_survey.return_value = None
 
-    mock_driver.get_text_questions_from_survey.return_value = questions
-    mock_driver.get_text_question.return_value = questions[0]
+    mock_driver.get_text_questions_from_survey.return_value = text_questions
+    mock_driver.get_text_question.return_value = text_questions[0]
     mock_driver.insert_text_question.return_value = None
+
+    mock_driver.get_dimensional_questions_from_survey.return_value = (
+        dimensional_questions
+    )
+    mock_driver.get_dimensional_question.return_value = dimensional_questions[0]
+    # mock_driver.insert_dimensional_question.return_value = None
 
     return DataService(driver=mock_driver)
 
@@ -133,3 +155,43 @@ class TestDataServiceTextQuestionMethods:
         data_service._driver.insert_text_question.assert_called_once_with(
             text_question=new_text_question
         )
+
+
+class TestDataServiceDimensionalQuestionMethods:
+    def test_get_questions_from_survey(
+        self,
+        data_service: DataService,
+    ):
+        survey_uid = UUID("ee50dd84-86a0-4a9d-a632-ec6670e2cd89")
+        questions = data_service.get_dimensional_questions_from_survey(
+            survey_uid=survey_uid
+        )
+
+        assert len(questions) == 1
+        assert isinstance(questions[0], DimensionalQuestion)
+        method = data_service._driver.get_dimensional_questions_from_survey
+        method.assert_called_once_with(survey_uid=survey_uid)
+
+    def test_get_question(
+        self,
+        data_service: DataService,
+    ):
+        question_uid = UUID("ee50dd84-86a0-4a9d-a632-ec6670e2cd89")
+        question = data_service.get_dimensional_question(question_uid=question_uid)
+
+        assert isinstance(question, DimensionalQuestion)
+        assert question == data_service._driver.get_dimensional_question.return_value
+
+
+#    def test_insert_dimensional_question(
+#        self,
+#        data_service: DataService,
+#        existing_open_survey: Survey,
+#        new_dimensional_question: DimensionalQuestion,
+#    ):
+#        new_dimensional_question.survey_uid = existing_open_survey.uid
+#
+#        data_service.insert_dimensional_question(new_dimensional_question)
+#        data_service._driver.insert_dimensional_question.assert_called_once_with(
+#            dimensional_question=new_dimensional_question
+#        )

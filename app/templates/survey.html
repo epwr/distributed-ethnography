@@ -3,12 +3,25 @@
 {% block content %}
 <h1>{{survey.name}}</h3>
 
+<p>Note: Answering Questions is not yet implemented & this page is for testing purposes only.</p>
+
 <div>
-{% for question in questions %}
-<h2>{{question.question}}</h2>
+{% for question in text_questions %}
+<h4>{{question.question}}</h4>
 {% endfor %}
 <div>
 
-Answering Questions is not yet implemented.
+<div>
+{% for question in dimensional_questions %}
+<h4>{{question.question}}</h4>
+<ul>
+  <li>question.dimension_one</li>
+  <li>question.dimension_two</li>
+  <li>question.dimension_three</li>
+</ul>
+{% endfor %}
+<div>
+
+
 
 {% endblock %}

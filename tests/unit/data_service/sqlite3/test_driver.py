@@ -2,7 +2,7 @@ import sqlite3
 import pytest
 from uuid import UUID
 
-from app.models import Survey, TextQuestion
+from app.models import Survey, TextQuestion, DimensionalQuestion
 from app.data_service.sqlite3 import Sqlite3Driver
 
 
@@ -23,7 +23,7 @@ class TestDriverSurveyMethods:
     def test_sqlite3_driver_can_get_list_open_surveys(self, populated_db_driver):
         surveys = populated_db_driver.get_open_surveys()
 
-        assert len(surveys) == 2
+        assert len(surveys) == 5
         for survey in surveys:
             assert isinstance(survey, Survey)
 
@@ -172,3 +172,74 @@ class TestDriverTextQuestionMethods:
 
         with pytest.raises(sqlite3.IntegrityError):
             populated_db_driver.insert_text_question(text_question)
+
+
+class TestDriverDimensionalQuestionMethods:
+    @pytest.mark.parametrize(
+        "dimensional_question_uid",
+        (
+            UUID("11111111-3e01-4b2c-b396-1b20facf99c2"),
+            UUID("11111111-2b47-4d02-8c48-0fa65f0da016"),
+            UUID("11111111-041a-490d-a60c-82babc856120"),
+            UUID("11111111-b36f-4e80-aba4-9707a10d6acf"),
+        ),
+    )
+    def test_driver_get_dimensional_question(
+        self, populated_db_driver: Sqlite3Driver, dimensional_question_uid: UUID
+    ):
+        question = populated_db_driver.get_dimensional_question(
+            question_uid=dimensional_question_uid
+        )
+
+        assert isinstance(question, DimensionalQuestion)
+        assert question.uid == dimensional_question_uid
+
+    def test_get_dimensional_question_returns_none_if_no_question_with_uid_exists(
+        self, populated_db_driver: Sqlite3Driver
+    ):
+        question = populated_db_driver.get_dimensional_question(
+            question_uid=UUID("209d67a3-d354-4cd8-afc4-7e6479582086")
+        )
+
+        assert question is None
+
+    @pytest.mark.parametrize(
+        "survey_uid, expected_dq_uids",
+        (
+            (
+                UUID("00000000-9c88-4b81-9de4-bac7444fbb0a"),
+                {UUID("11111111-3e01-4b2c-b396-1b20facf99c2")},
+            ),
+            (
+                UUID("00000000-0762-4fd1-b927-65ddb494e04f"),
+                {UUID("11111111-2b47-4d02-8c48-0fa65f0da016")},
+            ),
+            (
+                UUID("00000000-e253-4c39-b32b-eeb4f8e8711d"),
+                {
+                    UUID("11111111-041a-490d-a60c-82babc856120"),
+                    UUID("11111111-b36f-4e80-aba4-9707a10d6acf"),
+                },
+            ),
+            (
+                UUID("99999999-a087-4fb6-a123-24ff30263530"),
+                {},
+            ),
+        ),
+    )
+    def test_driver_can_list_dimensional_questions_related_to_a_survey_uid(
+        self,
+        populated_db_driver: Sqlite3Driver,
+        survey_uid: UUID,
+        expected_dq_uids: set[UUID],
+    ):
+        dimensional_questions = (
+            populated_db_driver.get_dimensional_questions_from_survey(
+                survey_uid=survey_uid
+            )
+        )
+
+        assert len(dimensional_questions) == len(expected_dq_uids)
+        for tq in dimensional_questions:
+            assert isinstance(tq, DimensionalQuestion)
+            assert tq.uid in expected_dq_uids

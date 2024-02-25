@@ -5,6 +5,7 @@ from pathlib import Path
 
 from app.data_service import DataService, Sqlite3Driver
 from app.models import Survey
+from tests.unit.test_routes_helpers import assert_response_is_valid_html
 
 
 @pytest.fixture
@@ -17,6 +18,24 @@ def setup_data_service(monkeypatch, populated_db_driver):
     yield
 
     monkeypatch.undo()
+
+
+class TestReadEndpoints:
+    test_cases = (
+        "/",
+        "/admin",
+        "/surveys/new",
+        "/surveys/00000000-1f7c-43e9-ab61-3c34fd59a333",
+    )
+
+    @pytest.mark.parametrize("slug", test_cases)
+    def test_endpoint_returns_html(
+        self, app_client, setup_data_service, slug: str
+    ) -> None:
+        response = app_client.get(slug)
+
+        assert response.status_code == 200
+        assert_response_is_valid_html(response)
 
 
 class TestMutationEndpoints:
@@ -38,7 +57,7 @@ class TestMutationEndpoints:
                 "name": "test mutable endpoints 2",
                 "is_open": "on",
                 "question-0": "What's my name again?",
-                "question-1": "What's you name again?",
+                "question-1": "What's your name again?",
                 "question-2": "Why are we here again?",
             },
             "/surveys",
