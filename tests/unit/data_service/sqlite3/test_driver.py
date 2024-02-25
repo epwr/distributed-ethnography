@@ -77,7 +77,7 @@ class TestDriverSurveyMethods:
         assert surveys[0] == new_open_survey
 
 
-class TestDriverQuestionMethods:
+class TestDriverTextQuestionMethods:
     @pytest.mark.parametrize(
         "text_question_uid",
         (
@@ -86,7 +86,7 @@ class TestDriverQuestionMethods:
             UUID("11111111-b37a-32b3-19d9-72ec921021e3"),
         ),
     )
-    def test_driver_get_test_question(
+    def test_driver_get_text_question(
         self, populated_db_driver: Sqlite3Driver, text_question_uid: UUID
     ):
         question = populated_db_driver.get_text_question(question_uid=text_question_uid)
@@ -127,7 +127,7 @@ class TestDriverQuestionMethods:
             ),
         ),
     )
-    def test_driver_can_list_questions_related_to_a_survey_uid(
+    def test_driver_can_list_text_questions_related_to_a_survey_uid(
         self,
         populated_db_driver: Sqlite3Driver,
         survey_uid: UUID,
