@@ -23,7 +23,7 @@ class TestDriverSurveyMethods:
     def test_sqlite3_driver_can_get_list_open_surveys(self, populated_db_driver):
         surveys = populated_db_driver.get_open_surveys()
 
-        assert len(surveys) == 4
+        assert len(surveys) == 5
         for survey in surveys:
             assert isinstance(survey, Survey)
 

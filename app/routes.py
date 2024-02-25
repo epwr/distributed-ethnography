@@ -15,8 +15,6 @@ logging.info(f"Running with settings: {settings}")
 app = Flask(__name__)
 jinja_partials.register_extensions(app)
 
-# TODO: test that every endpoint logs the request.
-
 
 @app.before_request
 def create_data_service() -> None:
@@ -49,12 +47,21 @@ def get_survey(uid: str) -> str:
     data_service: DataService = app.data_service  # type: ignore[attr-defined]
     survey_uid = UUID(uid)
     survey = data_service.get_survey_if_open(survey_uid=survey_uid)
-    questions = data_service.get_text_questions_from_survey(survey_uid=survey_uid)
 
     if survey is None:
         abort(404, "Could not find a survey with that UUID.")
 
-    return render_template("survey.html", survey=survey, questions=questions)
+    text_questions = data_service.get_text_questions_from_survey(survey_uid=survey_uid)
+    dimensional_questions = data_service.get_dimensional_questions_from_survey(
+        survey_uid=survey_uid
+    )
+
+    return render_template(
+        "survey.html",
+        survey=survey,
+        text_questions=text_questions,
+        dimensional_questions=dimensional_questions,
+    )
 
 
 @app.route("/surveys/new")

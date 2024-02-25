@@ -15,9 +15,29 @@ INSERT INTO text_question (
 ) VALUES (
   '9c9facb5-f360-4155-852a-8e2ac04607ea'
   , '4b5bfb06-2060-4abf-b5fd-3bae5dcf72b9'
-  , 'What is your name?'
-), (
-  'ee947616-3d16-4095-bc8f-603be72022d3'
-  , '4b5bfb06-2060-4abf-b5fd-3bae5dcf72b9'
-  , 'Are you sure?'
+  , 'What story would you tell your best friend about this company?'
+);
+
+INSERT INTO dimensional_question (
+  uid
+  , survey_uid
+  , question
+  , dimension_one
+  , dimension_two	
+  , dimension_three
+) VALUES (
+  "4ccfc2b3-c18a-4c86-b918-1f30efdfeea2"
+  , "4b5bfb06-2060-4abf-b5fd-3bae5dcf72b9"
+  , "How strongly does this story demonstrate the following values?"
+  , "Empathy to Colleagues"
+  , "Service to Others"
+  , "Individual Growth"
+),
+(
+  "a6938e91-e7cc-4048-9b77-8cbba8d735cd"
+  , "4b5bfb06-2060-4abf-b5fd-3bae5dcf72b9"
+  , "How strongly does this story demonstrate the following values?"
+  , "Accountability"
+  , "Efficiency"
+  , "Individual Growth"
 );

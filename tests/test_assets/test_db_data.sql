@@ -28,6 +28,11 @@ INSERT INTO survey (
   "00000000-e253-4c39-b32b-eeb4f8e8711d"
   , true
   , "Open Test Survey - 2DQ"
+),
+(
+  "00000000-1f7c-43e9-ab61-3c34fd59a333"
+  , true
+  , "Open Test Survey - Mixed Questions"
 );
 
 INSERT INTO text_question (
@@ -53,6 +58,11 @@ INSERT INTO text_question (
   "11111111-b37a-44a1-19d9-72ec921021e3"
   , "00000000-b37a-32b3-19d9-72ec921021e3"
   , "What story?"
+),
+(
+  "11111111-8713-4275-9f43-4d127671f0ff"
+  , "00000000-1f7c-43e9-ab61-3c34fd59a333"
+  , "What story would you tell your grandchild about working in the military?"
 );
 
 INSERT INTO dimensional_question (
@@ -93,6 +103,22 @@ INSERT INTO dimensional_question (
   , "Purpose"
   , "Audacity"
   , "Clarity of Direction"
-);
+),
+(
+  "11111111-0fcc-484b-bab4-c33309cebd3c"
+  , "00000000-1f7c-43e9-ab61-3c34fd59a333"
+  , "How strongly does this story demonstrate the following values?"
+  , "Empathy to Colleagues"
+  , "Service to Others"
+  , "Individual Growth"
+),
+(
+  "11111111-b54a-45ee-86af-05f625f3d239"
+  , "00000000-1f7c-43e9-ab61-3c34fd59a333"
+  , "How strongly does this story demonstrate the following values?"
+  , "Accountability"
+  , "Efficiency"
+  , "Individual Growth"
+);;
 
 COMMIT;
