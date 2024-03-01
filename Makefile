@@ -3,13 +3,16 @@ VENV := venv
 APP_DIR := app
 
 # default target, when make executed without arguments
-all: lint test format
+all: format lint test
 
 $(VENV)/bin/activate:
 	python3 -m venv $(VENV)
 	./$(VENV)/bin/pip install -r ./requirements/requirements.txt -r ./requirements/requirements-dev.txt
 
 venv: $(VENV)/bin/activate
+
+format: venv
+	./$(VENV)/bin/black app tests
 
 lint: venv
 	./$(VENV)/bin/mypy app --strict
@@ -24,7 +27,7 @@ test: venv
 	./$(VENV)/bin/coverage report --show-missing --fail-under=100
 
 run: venv
-	touch .gitignore  # used to force make to run command every time 
+	touch .gitignore  # used to force make to run command every time
 	$(shell yq -o='shell' '.env_variables' config/local.toml \
 	| tr '\n' ' ' \
 	| sed 's|$$|./$(VENV)/bin/python3 serve.py|')
