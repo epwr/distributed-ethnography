@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: Linting
 
 on:
   push:
@@ -22,8 +22,8 @@ jobs:
     - name: Install dependencies
       run: make venv
 
-    - name: Run Static Analysis & Tests
-      run: make
+    - name: Run Static Analysis
+      run: make lint
 
-    - name: Ensure 100% Test Coverage
-      run: make coverage
+	- name: Run Formatting
+	  run: black --check app tests
