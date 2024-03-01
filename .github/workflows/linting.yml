@@ -24,6 +24,3 @@ jobs:
 
     - name: Run Static Analysis
       run: make lint
-
-	- name: Run Formatting
-	  run: black --check app tests

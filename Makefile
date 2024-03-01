@@ -3,7 +3,7 @@ VENV := venv
 APP_DIR := app
 
 # default target, when make executed without arguments
-all: lint test
+all: lint test format
 
 $(VENV)/bin/activate:
 	python3 -m venv $(VENV)
@@ -14,6 +14,7 @@ venv: $(VENV)/bin/activate
 lint: venv
 	./$(VENV)/bin/mypy app --strict
 	./$(VENV)/bin/flake8 app tests
+	./$(VENV)/bin/black --check app tests
 
 # Use `yq` to parse config/testing.toml and set the env variables. Then run tests & coverage.
 test: venv
